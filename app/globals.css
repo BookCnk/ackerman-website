@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+
+  --font-sans: var(--font-prompt), var(--font-kanit), sans-serif;
+  --font-heading: var(--font-kanit), sans-serif;
+
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  --animate-marquee: marquee 40s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ธีมเว็บเป็นโทนมืด + แดง ตามดีไซน์ AutoDetail เดิม (โทนเดียว ไม่มี light mode) */
+:root {
+  --primary: #dd3333;
+  --primary-hover: #b92626;
+  --secondary: #e5e5e5;
+  --accent: #ff4d4d;
+  --background: #121212;
+  --surface: #1c1c1c;
+  --foreground: #ffffff;
+  --muted: #a3a3a3;
+  --border: #2a2a2a;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: 8rem;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}

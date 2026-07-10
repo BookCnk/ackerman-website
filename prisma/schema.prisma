@@ -1,0 +1,138 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum LicenseStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  REVOKED
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  passwordHash String?
+  name         String?
+  role         Role          @default(CUSTOMER)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  licenses     License[]
+  orders       Order[]
+  auditLogs    AuditLog[]
+  downloadLogs DownloadLog[]
+}
+
+model Product {
+  id              String    @id @default(uuid())
+  name            String
+  description     String?
+  price           Float
+  stripeProductId String?
+  stripePriceId   String?
+  isLicense       Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  orders          Order[]
+  releases        Release[]
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product     @relation(fields: [productId], references: [id])
+  amount          Float
+  currency        String      @default("USD")
+  status          OrderStatus @default(PENDING)
+  stripeSessionId String?     @unique
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  licenses        License[]
+}
+
+model License {
+  id                 String        @id @default(uuid())
+  keyHash            String        @unique
+  keyPrefix          String // First 8 characters of key for easy lookup / identification
+  userId             String?
+  user               User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  orderId            String?
+  order              Order?        @relation(fields: [orderId], references: [id])
+  maxDevices         Int           @default(1)
+  activeDevicesCount Int           @default(0)
+  status             LicenseStatus @default(ACTIVE)
+  credits            Int           @default(0)
+  expiresAt          DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  devices            Device[]
+  downloadLogs       DownloadLog[]
+}
+
+model Device {
+  id           String   @id @default(uuid())
+  licenseId    String
+  license      License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  hwidHash     String // SHA-256 hash of hardware identifier
+  name         String?
+  firstBoundAt DateTime @default(now())
+  lastSeenAt   DateTime @default(now())
+
+  @@unique([licenseId, hwidHash])
+}
+
+model DownloadLog {
+  id           String   @id @default(uuid())
+  licenseId    String
+  license      License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  releaseId    String
+  release      Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+  hwidHash     String?
+  ipAddress    String?
+  userAgent    String?
+  downloadedAt DateTime @default(now())
+}
+
+model Release {
+  id           String        @id @default(uuid())
+  version      String        @unique
+  filename     String
+  s3Key        String // Path in S3 bucket
+  checksum     String? // SHA-256 checksum
+  description  String?
+  isPublic     Boolean       @default(false)
+  productId    String?
+  product      Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  downloadLogs DownloadLog[]
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
