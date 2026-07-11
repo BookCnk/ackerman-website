@@ -11,7 +11,7 @@ export default function InstagramGrid() {
         {IMAGES.map((src) => (
           <a
             key={src}
-            href="https://instagram.com"
+            href="https://www.instagram.com/ackermannthailand/"
             target="_blank"
             rel="noopener noreferrer"
             className="group overflow-hidden rounded-xl"

@@ -6,22 +6,22 @@ const FEATURES = [
   {
     number: "01",
     title: "ช่างผู้เชี่ยวชาญ",
-    description: "ทีมดีเทลเลอร์มืออาชีพ ผ่านการฝึกฝนและมีประสบการณ์ดูแลรถหลายปี",
+    description: "ทีมช่างเฉพาะทางผ่านการฝึกฝนและมีประสบการณ์ด้านการตกแต่งรถหลายปี ดูแลทุกงานด้วยความรู้จริง",
   },
   {
     number: "02",
     title: "แพ็กเกจตามใจคุณ",
-    description: "เลือกบริการได้ตามสภาพรถและความต้องการของคุณโดยเฉพาะ",
+    description: "เลือกบริการได้ตามสภาพรถและงบประมาณของคุณ ปรึกษาฟรีก่อนตัดสินใจทุกครั้ง",
   },
   {
     number: "03",
     title: "ราคาคุ้มค่า",
-    description: "ราคาแข่งขันได้ ไม่มีค่าใช้จ่ายแอบแฝง คุณภาพเต็มทุกบาททุกสตางค์",
+    description: "ราคาแข่งขันได้ ไม่มีค่าใช้จ่ายแอบแฝง ใช้สินค้าคุณภาพในราคาที่คุ้มทุกบาท",
   },
   {
     number: "04",
     title: "ดูแลหลังบริการ",
-    description: "แนะนำวิธีดูแลรักษารถหลังใช้บริการ ให้รถสวยเงางามได้นานที่สุด",
+    description: "แนะนำการดูแลรักษาหลังใช้บริการ ให้รถขับดี ดูดี และใช้งานได้ยาวนานที่สุด",
   },
 ];
 
@@ -38,13 +38,13 @@ export default function WhyChoose() {
         <div className="absolute inset-0 bg-background/70" />
         <div className="relative z-10 mx-auto max-w-3xl px-4 text-center">
           <h2 className="font-heading text-3xl font-bold sm:text-4xl lg:text-5xl">
-            อยากให้รถกลับมาเงาเหมือนใหม่?
+            {"อยากให้รถขับดีขึ้น ดูดีขึ้น?"}
           </h2>
           <Link
             href="/#contact"
             className="mt-8 inline-flex rounded-full bg-primary px-10 py-4 font-medium text-white transition hover:bg-primary-hover"
           >
-            จองคิวเลย
+            {"จองคิวเลย"}
           </Link>
         </div>
       </div>
@@ -53,7 +53,7 @@ export default function WhyChoose() {
         <SectionHeading
           subtitle="เชื่อถือได้ ราคาคุ้มค่า"
           title="ทำไมต้องเลือก Ackermann Garage?"
-          description="ตั้งแต่ทำความสะอาดภายในจนถึงเคลือบเซรามิก เราดูแลรถของคุณด้วยความแม่นยำ ใส่ใจ และมุ่งมั่นสู่ความสมบูรณ์แบบ"
+          description="ครอบคลุมทุกงานตกแต่งรถ ตั้งแต่ช่วงล่าง ฟิล์ม แลปสี ไปจนถึงอุปกรณ์ภายใน ด้วยความแม่นยำและมาตรฐานระดับพรีเมียม"
         />
         <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature) => (

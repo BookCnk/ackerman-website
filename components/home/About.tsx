@@ -8,14 +8,14 @@ export default function About() {
         <div className="grid grid-cols-2 gap-4">
           <Image
             src="/images/about-1.webp"
-            alt="ทีมงาน Ackerman กำลังดีเทลรถ"
+            alt="ทีมช่างผู้เชี่ยวชาญ Ackermann Garage"
             width={759}
             height={1024}
             className="rounded-xl object-cover"
           />
           <Image
             src="/images/about-2.webp"
-            alt="การเคลือบสีรถอย่างพิถีพิถัน"
+            alt="งานตกแต่งรถอย่างพิถีพิถันที่ Ackermann Garage"
             width={759}
             height={1024}
             className="mt-10 rounded-xl object-cover"
@@ -26,8 +26,8 @@ export default function About() {
           <SectionHeading
             align="left"
             subtitle="เกี่ยวกับเรา"
-            title="คืนความเงางาม ทั้งภายนอกและภายใน"
-            description="ที่ Ackermann Garage เราหลงใหลในการทำให้รถทุกคันดูดีที่สุด ตั้งแต่การขัดสีให้เงางามระดับโชว์รูม ไปจนถึงการทำความสะอาดภายในแบบล้ำลึก ทีมช่างมืออาชีพของเราส่งมอบงานที่ไร้ที่ติด้วยความใส่ใจและแม่นยำทุกขั้นตอน"
+            title="สร้างประสิทธิภาพ ที่รู้สึกได้ทุกการขับขี่"
+            description="ที่ Ackermann Garage เราครบครันทุกงานตกแต่งรถ ไม่ว่าจะเป็นช่วงล่าง โช๊คอัพ ฟิล์มกระจก แลปสี Body Kit หรืออุปกรณ์ภายใน ทีมช่างผู้เชี่ยวชาญพร้อมดูแลรถของคุณด้วยความแม่นยำ ใส่ใจ และมุ่งมั่นสู่ผลลัพธ์ที่ดีที่สุด"
           />
           <div className="mt-8 inline-flex items-baseline gap-3 rounded-xl border border-border bg-surface px-8 py-6">
             <span className="font-heading text-4xl font-bold text-primary sm:text-5xl">

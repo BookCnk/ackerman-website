@@ -10,17 +10,17 @@ const COMPANY_LINKS = [
 ];
 
 const SERVICE_LINKS = [
-  "ล้างรถด้วยมือ & เคลือบแว็กซ์",
-  "ทำความสะอาดภายในแบบล้ำลึก",
-  "ขัดลบรอยสี",
-  "เคลือบเซรามิก",
-  "ดีเทลห้องเครื่อง",
-  "ฟื้นฟูไฟหน้า",
+  "ช่วงล่าง & โช๊คอัพ",
+  "ฟิล์มกระจก & ฟิล์มใส (PPF)",
+  "แลปสี & เปลี่ยนสีรถ",
+  "Body Kit & ชิ้นส่วนภายนอก",
+  "ระบบเครื่องยนต์ & ท่อ",
+  "ตกแต่งภายใน",
 ];
 
 const SOCIALS = [
-  { href: "https://facebook.com", label: "Facebook" },
-  { href: "https://instagram.com", label: "Instagram" },
+  { href: "https://www.facebook.com/profile.php?id=61579339495604", label: "Facebook" },
+  { href: "https://www.instagram.com/ackermannthailand/", label: "Instagram" },
   { href: "https://line.me", label: "LINE" },
   { href: "https://youtube.com", label: "YouTube" },
 ];
@@ -38,9 +38,7 @@ export default function Footer() {
             className="h-14 w-auto"
           />
           <p className="mt-4 text-sm leading-relaxed text-muted">
-            เรามุ่งมั่นให้บริการดีเทลลิ่งรถยนต์คุณภาพสูงอย่างมืออาชีพ
-            ตั้งแต่ล้างรถด้วยมือจนถึงเคลือบเซรามิกขั้นสูง
-            เพื่อให้รถของคุณดูดีที่สุดและคงมูลค่ายาวนาน
+            {"เรามุ่งมั่นให้บริการตกแต่งรถยนต์ครบวงจรอย่างมืออาชีพ ตั้งแต่ช่วงล่าง ฟิล์ม แลปสี Body Kit จนถึงอุปกรณ์ภายใน เพื่อให้รถของคุณดูดีและขับดีที่สุด"}
           </p>
           <ul className="mt-6 flex flex-wrap gap-4 text-sm">
             {SOCIALS.map((social) => (
@@ -59,7 +57,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">เมนู</h3>
+          <h3 className="font-heading text-lg font-semibold">{"เมนู"}</h3>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             {COMPANY_LINKS.map((link) => (
               <li key={link.href}>
@@ -72,7 +70,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">บริการของเรา</h3>
+          <h3 className="font-heading text-lg font-semibold">{"บริการของเรา"}</h3>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             {SERVICE_LINKS.map((service) => (
               <li key={service}>
@@ -85,22 +83,22 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">ติดต่อเรา</h3>
+          <h3 className="font-heading text-lg font-semibold">{"ติดต่อเรา"}</h3>
           <address className="mt-4 flex flex-col gap-3 text-sm not-italic text-muted">
             <p>
-              <span className="block font-medium text-foreground">สำนักงานใหญ่</span>
-              123 ถนนสุขุมวิท แขวงคลองเตย
+              <span className="block font-medium text-foreground">{"สำนักงานใหญ่"}</span>
+              {"123 ถนนสุขุมวิท แขวงคลองเตย"}
               <br />
-              เขตคลองเตย กรุงเทพฯ 10110
+              {"เขตคลองเตย กรุงเทพฯ 10110"}
             </p>
             <p>
-              <span className="block font-medium text-foreground">โทรศัพท์</span>
+              <span className="block font-medium text-foreground">{"โทรศัพท์"}</span>
               <a href="tel:021234567" className="transition hover:text-foreground">
                 02-123-4567
               </a>
             </p>
             <p>
-              <span className="block font-medium text-foreground">อีเมล</span>
+              <span className="block font-medium text-foreground">{"อีเมล"}</span>
               <a href="mailto:contact@ackerman.co.th" className="transition hover:text-foreground">
                 contact@ackerman.co.th
               </a>
@@ -111,14 +109,14 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted sm:flex-row sm:px-6 lg:px-8">
-          <p>© 2026 Ackermann Garage สงวนลิขสิทธิ์</p>
+          <p>{"© 2026 Ackermann Garage สงวนลิขสิทธิ์"}</p>
           <p>
             <a href="#" className="transition hover:text-foreground">
-              ข้อกำหนดการใช้งาน
+              {"ข้อกำหนดการใช้งาน"}
             </a>
             {" · "}
             <a href="#" className="transition hover:text-foreground">
-              นโยบายความเป็นส่วนตัว
+              {"นโยบายความเป็นส่วนตัว"}
             </a>
           </p>
         </div>
