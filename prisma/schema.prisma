@@ -11,128 +11,168 @@ enum Role {
   CUSTOMER
 }
 
-enum OrderStatus {
-  PENDING
-  COMPLETED
-  FAILED
+enum StockStatus {
+  IN_STOCK
+  PRE_ORDER
+  SERVICE_ONLY
 }
 
-enum LicenseStatus {
-  ACTIVE
-  EXPIRED
-  SUSPENDED
-  REVOKED
+enum BookingStatus {
+  PENDING_DEPOSIT
+  DEPOSIT_PAID_ERP_SYNCED
+  IN_WORKSHOP
+  READY_FOR_PICKUP
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  PROMPTPAY_QR
+  CREDIT_CARD
 }
 
 model User {
-  id           String        @id @default(uuid())
-  email        String        @unique
+  id           String                @id @default(uuid())
+  email        String                @unique
+  phone        String?               @unique
   passwordHash String?
   name         String?
-  role         Role          @default(CUSTOMER)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  licenses     License[]
-  orders       Order[]
-  auditLogs    AuditLog[]
-  downloadLogs DownloadLog[]
+  taxId        String?
+  erpCustomerId String?              @unique
+  role         Role                  @default(CUSTOMER)
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+  vehicles     CustomerVehicle[]
+  bookings     ServiceBooking[]
+  warranties   WarrantyCertificate[]
 }
 
-model Product {
-  id              String    @id @default(uuid())
-  name            String
-  description     String?
-  price           Float
-  stripeProductId String?
-  stripePriceId   String?
-  isLicense       Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  orders          Order[]
-  releases        Release[]
+model CustomerVehicle {
+  id           String           @id @default(uuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  licensePlate String           @unique
+  make         String
+  model        String
+  submodel     String?
+  year         String
+  vin          String?
+  lastMileage  Int              @default(0)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  bookings     ServiceBooking[]
 }
 
-model Order {
-  id              String      @id @default(uuid())
-  userId          String
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId       String
-  product         Product     @relation(fields: [productId], references: [id])
-  amount          Float
-  currency        String      @default("USD")
-  status          OrderStatus @default(PENDING)
-  stripeSessionId String?     @unique
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  licenses        License[]
+model CatalogProduct {
+  id                 String            @id
+  sku                String            @unique
+  name               String
+  category           String
+  brand              String
+  image              String
+  partPrice          Float
+  laborPrice         Float
+  installHours       Int               @default(2)
+  stockStatus        StockStatus       @default(IN_STOCK)
+  stockQty           Int               @default(0)
+  leadTimeDays       Int               @default(0)
+  compatibleVehicles String[]
+  specs              String[]
+  warrantyMonths     Int               @default(12)
+  warrantyKm         Int               @default(20000)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  bookingItems       BookingLineItem[]
 }
 
-model License {
-  id                 String        @id @default(uuid())
-  keyHash            String        @unique
-  keyPrefix          String // First 8 characters of key for easy lookup / identification
-  userId             String?
-  user               User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  orderId            String?
-  order              Order?        @relation(fields: [orderId], references: [id])
-  maxDevices         Int           @default(1)
-  activeDevicesCount Int           @default(0)
-  status             LicenseStatus @default(ACTIVE)
-  credits            Int           @default(0)
-  expiresAt          DateTime?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  devices            Device[]
-  downloadLogs       DownloadLog[]
+model ShowcaseBuild {
+  id            String   @id
+  title         String
+  vehicleId     String
+  vehicleLabel  String
+  categoryTag   String
+  heroImage     String
+  galleryImages String[]
+  ownerHandle   String
+  completedDate String
+  summary       String
+  suspensionSpec String
+  wheelsSpec    String
+  brakesSpec    String
+  exhaustSpec   String
+  partIds       String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
-model Device {
-  id           String   @id @default(uuid())
-  licenseId    String
-  license      License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
-  hwidHash     String // SHA-256 hash of hardware identifier
-  name         String?
-  firstBoundAt DateTime @default(now())
-  lastSeenAt   DateTime @default(now())
-
-  @@unique([licenseId, hwidHash])
+model ServiceBooking {
+  id                String            @id @default(uuid())
+  bookingNo         String            @unique
+  userId            String?
+  user              User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  vehicleId         String?
+  vehicle           CustomerVehicle?  @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  customerName      String
+  customerPhone     String
+  licensePlate      String
+  vehicleLabel      String
+  appointmentDate   String
+  appointmentSlot   String
+  bayAssigned       String
+  partsReadiness    String
+  repairStage       Int               @default(1)
+  partsTotal        Float
+  laborTotal        Float
+  grandTotal        Float
+  depositPaid       Float
+  remainingBalance  Float
+  paymentMethod     PaymentMethod     @default(PROMPTPAY_QR)
+  paymentGatewayRef String?           @unique
+  status            BookingStatus     @default(DEPOSIT_PAID_ERP_SYNCED)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  items             BookingLineItem[]
+  webhookLogs       ErpWebhookLog[]
 }
 
-model DownloadLog {
-  id           String   @id @default(uuid())
-  licenseId    String
-  license      License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
-  userId       String?
-  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  releaseId    String
-  release      Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
-  hwidHash     String?
-  ipAddress    String?
-  userAgent    String?
-  downloadedAt DateTime @default(now())
+model BookingLineItem {
+  id          String         @id @default(uuid())
+  bookingId   String
+  booking     ServiceBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  productId   String?
+  product     CatalogProduct? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  sku         String
+  name        String
+  partPrice   Float
+  laborPrice  Float
+  stockStatus StockStatus
 }
 
-model Release {
-  id           String        @id @default(uuid())
-  version      String        @unique
-  filename     String
-  s3Key        String // Path in S3 bucket
-  checksum     String? // SHA-256 checksum
-  description  String?
-  isPublic     Boolean       @default(false)
-  productId    String?
-  product      Product?      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  downloadLogs DownloadLog[]
+model WarrantyCertificate {
+  id            String   @id @default(uuid())
+  certNo        String   @unique
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  productName   String
+  sku           String
+  serialOrDot   String
+  licensePlate  String
+  vehicleLabel  String
+  installedDate String
+  expiryDate    String
+  installedKm   Int
+  maxWarrantyKm Int
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
 }
 
-model AuditLog {
-  id        String   @id @default(uuid())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  action    String
-  details   String?
-  ipAddress String?
-  createdAt DateTime @default(now())
+model ErpWebhookLog {
+  id          String         @id @default(uuid())
+  bookingId   String
+  booking     ServiceBooking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  endpointUrl String
+  event       String
+  payloadJson String
+  httpStatus  Int            @default(200)
+  createdAt   DateTime       @default(now())
 }

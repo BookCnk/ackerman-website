@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Kanit, Prompt } from "next/font/google";
+import { BookingProvider } from "@/components/booking/BookingContext";
+import { AuthProvider } from "@/components/auth/AuthContext";
+import AuthModal from "@/components/auth/AuthModal";
+import UrbanIntroCurtain from "@/components/home/UrbanIntroCurtain";
+import SlideOverDrawer from "@/components/booking/SlideOverDrawer";
 import "./globals.css";
 
 const kanit = Kanit({
@@ -15,9 +20,9 @@ const prompt = Prompt({
 });
 
 export const metadata: Metadata = {
-  title: "Ackermann Garage — คาร์แคร์และดีเทลลิ่งครบวงจร",
+  title: "Ackermann Garage — ศูนย์บริการแต่งรถ ช่วงล่าง เบรก ล้อ ยาง ครบวงจร",
   description:
-    "Ackermann Garage บริการดีเทลลิ่งรถยนต์ครบวงจร ล้างมือ เคลือบแว็กซ์ ขัดสี เคลือบเซรามิก ทำความสะอาดภายใน คืนความเงางามให้รถคุณ",
+    "Ackermann Garage ศูนย์รวมของแต่งรถระดับพรีเมียม ช่วงล่าง โช๊คอัพ เบรก ล้อฟอร์จ ท่อไอเสีย และฟิล์มใส PPF พร้อมระบบเช็คราคาและจองคิวติดตั้งออนไลน์เชื่อมตรงสู่ระบบ ERP",
 };
 
 export default function RootLayout({
@@ -27,7 +32,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th" className={`${kanit.variable} ${prompt.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AuthProvider>
+          <BookingProvider>
+            <UrbanIntroCurtain />
+            {children}
+            <SlideOverDrawer />
+            <AuthModal />
+          </BookingProvider>
+        </AuthProvider>
+      </body>
     </html>
   );
 }

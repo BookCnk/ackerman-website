@@ -1,0 +1,17 @@
+﻿{
+    "version":  "1.0.0",
+    "name":  "task-observer",
+    "description":  "Continuous Skill Discovery \u0026 Improvement meta-skill. Monitors task execution for skill improvement opportunities and captures repeatable patterns.",
+    "homepage":  "https://github.com/iamneilroberts/claude-skills",
+    "author":  {
+                   "name":  "Eoghan Henn / rebelytics.com",
+                   "url":  "https://github.com/rebelytics/one-skill-to-rule-them-all"
+               },
+    "keywords":  [
+                     "meta-skill",
+                     "skill-discovery",
+                     "continuous-improvement",
+                     "task-observer"
+                 ],
+    "license":  "CC-BY-4.0"
+}

@@ -3,19 +3,19 @@ import Link from "next/link";
 
 const COMPANY_LINKS = [
   { href: "/", label: "หน้าแรก" },
-  { href: "/#about", label: "เกี่ยวกับเรา" },
-  { href: "/#services", label: "บริการ" },
-  { href: "/#testimonials", label: "รีวิว" },
-  { href: "/#faq", label: "คำถามที่พบบ่อย" },
+  { href: "/shop", label: "เลือกสินค้า & เช็คราคา" },
+  { href: "/showcase", label: "ผลงานร้าน (Build Gallery)" },
+  { href: "/booking", label: "จองคิว & โอนมัดจำ" },
+  { href: "/garage", label: "รถของฉัน (My Garage)" },
 ];
 
 const SERVICE_LINKS = [
-  "ช่วงล่าง & โช๊คอัพ",
-  "ฟิล์มกระจก & ฟิล์มใส (PPF)",
-  "แลปสี & เปลี่ยนสีรถ",
-  "Body Kit & ชิ้นส่วนภายนอก",
-  "ระบบเครื่องยนต์ & ท่อ",
-  "ตกแต่งภายใน",
+  "ช่วงล่าง & โช๊คอัพ (Öhlins / KW)",
+  "ระบบเบรก Performance (Brembo)",
+  "ล้อแม็กฟอร์จ & ยาง (BBS / Michelin)",
+  "ท่อไอเสียไทเทเนียม (Akrapovič)",
+  "ฟิล์มใสกันรอย (STEK Full PPF)",
+  "ตั้งศูนย์ 3D & Corner Weight",
 ];
 
 const SOCIALS = [
@@ -38,7 +38,8 @@ export default function Footer() {
             className="h-14 w-auto"
           />
           <p className="mt-4 text-sm leading-relaxed text-muted">
-            {"เรามุ่งมั่นให้บริการตกแต่งรถยนต์ครบวงจรอย่างมืออาชีพ ตั้งแต่ช่วงล่าง ฟิล์ม แลปสี Body Kit จนถึงอุปกรณ์ภายใน เพื่อให้รถของคุณดูดีและขับดีที่สุด"}
+            ศูนย์บริการแต่งรถยนต์และอัปเกรดสมรรถนะครบวงจร ช่วงล่าง เบรก ล้อฟอร์จ ท่อไอเสีย
+            และฟิล์มใส PPF เชื่อมต่อระบบเช็คสต็อกและจองคิวช่องซ่อมเข้าสู่ Ackermann ERP อัตโนมัติ
           </p>
           <ul className="mt-6 flex flex-wrap gap-4 text-sm">
             {SOCIALS.map((social) => (
@@ -57,24 +58,30 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">{"เมนู"}</h3>
+          <h3 className="font-heading text-lg font-semibold">ระบบออนไลน์</h3>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             {COMPANY_LINKS.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className="text-muted transition hover:text-foreground">
+                <Link
+                  href={link.href}
+                  className="text-muted transition hover:text-foreground"
+                >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">{"บริการของเรา"}</h3>
+          <h3 className="font-heading text-lg font-semibold">บริการของเรา</h3>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             {SERVICE_LINKS.map((service) => (
               <li key={service}>
-                <Link href="/#services" className="text-muted transition hover:text-foreground">
+                <Link
+                  href="/shop"
+                  className="text-muted transition hover:text-foreground"
+                >
                   {service}
                 </Link>
               </li>
@@ -83,23 +90,31 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="font-heading text-lg font-semibold">{"ติดต่อเรา"}</h3>
+          <h3 className="font-heading text-lg font-semibold">ติดต่อเรา</h3>
           <address className="mt-4 flex flex-col gap-3 text-sm not-italic text-muted">
             <p>
-              <span className="block font-medium text-foreground">{"สำนักงานใหญ่"}</span>
-              {"123 ถนนสุขุมวิท แขวงคลองเตย"}
+              <span className="block font-medium text-foreground">
+                Ackermann Garage (สำนักงานใหญ่)
+              </span>
+              123 ถนนสุขุมวิท แขวงคลองเตย
               <br />
-              {"เขตคลองเตย กรุงเทพฯ 10110"}
+              เขตคลองเตย กรุงเทพฯ 10110
             </p>
-            <p>
-              <span className="block font-medium text-foreground">{"โทรศัพท์"}</span>
-              <a href="tel:021234567" className="transition hover:text-foreground">
+            <p className="tabular-nums">
+              <span className="block font-medium text-foreground">โทรศัพท์</span>
+              <a
+                href="tel:021234567"
+                className="transition hover:text-foreground"
+              >
                 02-123-4567
               </a>
             </p>
             <p>
-              <span className="block font-medium text-foreground">{"อีเมล"}</span>
-              <a href="mailto:contact@ackerman.co.th" className="transition hover:text-foreground">
+              <span className="block font-medium text-foreground">อีเมล</span>
+              <a
+                href="mailto:contact@ackerman.co.th"
+                className="transition hover:text-foreground"
+              >
                 contact@ackerman.co.th
               </a>
             </p>
@@ -109,15 +124,15 @@ export default function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-sm text-muted sm:flex-row sm:px-6 lg:px-8">
-          <p>{"© 2026 Ackermann Garage สงวนลิขสิทธิ์"}</p>
+          <p>© 2026 Ackermann Garage สงวนลิขสิทธิ์</p>
           <p>
-            <a href="#" className="transition hover:text-foreground">
-              {"ข้อกำหนดการใช้งาน"}
-            </a>
+            <Link href="/garage" className="transition hover:text-foreground">
+              ตรวจสอบสถานะงานซ่อม & ใบรับประกัน
+            </Link>
             {" · "}
-            <a href="#" className="transition hover:text-foreground">
-              {"นโยบายความเป็นส่วนตัว"}
-            </a>
+            <Link href="/booking" className="transition hover:text-foreground">
+              เงื่อนไขการมัดจำจองคิว
+            </Link>
           </p>
         </div>
       </div>

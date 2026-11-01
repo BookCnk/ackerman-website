@@ -1,0 +1,18 @@
+﻿{
+    "version":  "1.0.0",
+    "name":  "clone-website",
+    "description":  "Rebuild existing web pages as working local code, matching their real content, assets, responsive layout, and interactions.",
+    "homepage":  "https://github.com/JCodesMore/ai-website-cloner-template",
+    "author":  {
+                   "name":  "JCodesMore",
+                   "url":  "https://github.com/JCodesMore"
+               },
+    "keywords":  [
+                     "website-cloner",
+                     "reverse-engineering",
+                     "framer",
+                     "nextjs",
+                     "react"
+                 ],
+    "license":  "MIT"
+}

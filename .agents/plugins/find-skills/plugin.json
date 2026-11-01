@@ -1,0 +1,18 @@
+﻿{
+    "version":  "1.0.0",
+    "name":  "find-skills",
+    "description":  "Helps users discover and install agent skills from the open agent skills ecosystem (skills.sh) using npx skills find and add.",
+    "homepage":  "https://skills.sh",
+    "author":  {
+                   "name":  "vercel-labs",
+                   "url":  "https://github.com/vercel-labs"
+               },
+    "keywords":  [
+                     "skills",
+                     "agent-skills",
+                     "discovery",
+                     "package-manager",
+                     "vercel-labs"
+                 ],
+    "license":  "MIT"
+}
