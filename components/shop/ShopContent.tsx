@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useBooking } from "@/components/booking/BookingContext";
 import {
   CATALOG_ITEMS,
@@ -12,6 +13,7 @@ import {
   calculateDeposit,
   formatTHB,
   getCategoryFallbackImage,
+  getSmartProductGallery,
 } from "@/lib/mock-erp-data";
 
 const CATEGORY_THAI_MAP: Record<string, string> = {
@@ -58,6 +60,7 @@ function StockBadge({ item }: { item: CatalogItem }) {
 }
 
 export default function ShopContent() {
+  const router = useRouter();
   const {
     selectedVehicleId,
     setSelectedVehicleId,
@@ -79,6 +82,11 @@ export default function ShopContent() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCount, setTotalCount] = useState(CATALOG_ITEMS.length);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Pro Dual View Switcher (Visual Grid vs Engineering Spec Table)
+  const [viewMode, setViewMode] = useState<"GRID" | "SPEC_TABLE">("GRID");
+  const [quickViewItem, setQuickViewItem] = useState<CatalogItem | null>(null);
+  const [quickViewActivePhoto, setQuickViewActivePhoto] = useState(0);
 
   // Sync URL query params
   useEffect(() => {
@@ -387,18 +395,60 @@ export default function ShopContent() {
               รายการในหน้านี้ (จากทั้งหมด {totalCount.toLocaleString("th-TH")} รายการ)
             </p>
 
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-muted">เรียงตาม:</span>
-              <select
-                aria-label="เรียงลำดับสินค้า"
-                value={sort}
-                onChange={(e) => setSort(e.target.value)}
-                className="rounded-lg border border-border bg-surface px-3 py-1.5 text-foreground focus:border-primary focus:outline-none"
-              >
-                <option value="default">มาตรฐาน (ความนิยม / ลำดับ ERP)</option>
-                <option value="price-asc">ราคา: ต่ำไปสูง</option>
-                <option value="price-desc">ราคา: สูงไปต่ำ</option>
-              </select>
+            <div className="flex items-center gap-3 text-xs">
+              {/* Dual View Switcher */}
+              <div className="flex items-center rounded-xl border border-border bg-surface p-1">
+                <button
+                  type="button"
+                  onClick={() => setViewMode("GRID")}
+                  title="มุมมองแบบการ์ดภาพ (Visual Grid)"
+                  className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                    viewMode === "GRID"
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                  </svg>
+                  <span className="hidden sm:inline">การ์ดรูปภาพ</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setViewMode("SPEC_TABLE")}
+                  title="มุมมองตารางสเปกทางวิศวกรรม (Engineering Spec Sheet)"
+                  className={`flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                    viewMode === "SPEC_TABLE"
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                  </svg>
+                  <span className="hidden sm:inline">ตารางสเปก</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <span className="text-muted">เรียงตาม:</span>
+                <select
+                  aria-label="เรียงลำดับสินค้า"
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="rounded-lg border border-border bg-surface px-3 py-1.5 text-foreground focus:border-primary focus:outline-none"
+                >
+                  <option value="default">มาตรฐาน (ความนิยม / ลำดับ ERP)</option>
+                  <option value="price-asc">ราคา: ต่ำไปสูง</option>
+                  <option value="price-desc">ราคา: สูงไปต่ำ</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -425,6 +475,128 @@ export default function ShopContent() {
               >
                 ล้างตัวกรองทั้งหมด
               </button>
+            </div>
+          ) : viewMode === "SPEC_TABLE" ? (
+            /* Engineering Spec Sheet Table View */
+            <div className="mt-6 overflow-x-auto rounded-2xl border border-border bg-surface">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-border bg-background/90 text-[11px] font-bold uppercase tracking-wider text-muted font-mono">
+                    <th className="p-3.5">รูป</th>
+                    <th className="p-3.5">ชื่อสินค้า & SKU</th>
+                    <th className="p-3.5">แบรนด์ / หมวด</th>
+                    <th className="p-3.5">สเปก & ฟิตเมนต์</th>
+                    <th className="p-3.5 text-center">สถานะสต็อก</th>
+                    <th className="p-3.5 text-right">ราคารวมติดตั้ง</th>
+                    <th className="p-3.5 text-center">การดำเนินการ</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {displayedProducts.map((item) => {
+                    const isSelected = selectedItems.some((i) => i.id === item.id);
+                    const displayImage = item.image || getCategoryFallbackImage(item.category);
+                    const itemTotal = item.partPrice + item.laborPrice;
+
+                    return (
+                      <tr key={item.id} className="transition hover:bg-background/50">
+                        <td className="p-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setQuickViewItem(item);
+                              setQuickViewActivePhoto(0);
+                            }}
+                            className="relative h-14 w-14 overflow-hidden rounded-xl border border-border bg-background"
+                          >
+                            <Image
+                              src={displayImage}
+                              alt={item.name}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          </button>
+                        </td>
+
+                        <td className="p-3">
+                          <Link
+                            href={`/shop/${encodeURIComponent(item.id)}`}
+                            className="font-bold text-foreground hover:text-primary transition line-clamp-1 text-xs"
+                          >
+                            {item.name}
+                          </Link>
+                          <span className="font-mono text-[11px] text-muted block mt-0.5">
+                            SKU: {item.sku}
+                          </span>
+                        </td>
+
+                        <td className="p-3">
+                          <span className="font-semibold text-primary block uppercase">
+                            {item.brand}
+                          </span>
+                          <span className="text-[11px] text-muted block">
+                            {CATEGORY_THAI_MAP[item.category] || item.category}
+                          </span>
+                        </td>
+
+                        <td className="p-3 max-w-[200px]">
+                          <p className="text-[11px] text-muted line-clamp-2">
+                            {item.specs && item.specs.length > 0
+                              ? item.specs.slice(0, 2).join(" • ")
+                              : "มาตรฐาน Ackermann Garage ตรงรุ่น"}
+                          </p>
+                        </td>
+
+                        <td className="p-3 text-center">
+                          <StockBadge item={item} />
+                        </td>
+
+                        <td className="p-3 text-right tabular-nums font-mono">
+                          <span className="font-bold text-foreground text-sm block">
+                            {formatTHB(itemTotal)}
+                          </span>
+                          <span className="text-[10px] text-emerald-400 font-medium block">
+                            ✓ รวมติดตั้ง
+                          </span>
+                        </td>
+
+                        <td className="p-3 text-center">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setQuickViewItem(item);
+                                setQuickViewActivePhoto(0);
+                              }}
+                              className="rounded-lg border border-border bg-background px-2.5 py-1.5 text-[11px] font-semibold text-secondary hover:border-primary hover:text-primary transition"
+                            >
+                              ดูภาพจริง
+                            </button>
+
+                            {isSelected ? (
+                              <button
+                                type="button"
+                                onClick={() => removeItem(item.id)}
+                                className="rounded-lg border border-primary bg-primary/10 px-2.5 py-1.5 text-[11px] font-semibold text-primary hover:bg-primary hover:text-white transition"
+                              >
+                                ✓ ในตะกร้า
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => addItem(item, true)}
+                                className="rounded-lg bg-primary px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-primary-hover transition"
+                              >
+                                + ใส่คิว
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           ) : (
             <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
@@ -519,22 +691,34 @@ export default function ShopContent() {
                       </div>
                     </div>
 
-                    <div className="p-5 pt-0">
+                    <div className="p-5 pt-0 flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuickViewItem(item);
+                          setQuickViewActivePhoto(0);
+                        }}
+                        className="rounded-full border border-border bg-background px-3 py-2.5 text-xs font-semibold text-secondary transition hover:border-primary hover:text-primary"
+                        title="ดูภาพจริงและมุมมองบนรถ"
+                      >
+                        ดูภาพจริง
+                      </button>
+
                       {isSelected ? (
                         <button
                           type="button"
                           onClick={() => removeItem(item.id)}
-                          className="w-full rounded-full border border-primary bg-primary/15 px-4 py-2.5 text-xs font-semibold text-primary transition hover:bg-primary hover:text-white"
+                          className="flex-1 rounded-full border border-primary bg-primary/15 px-4 py-2.5 text-xs font-semibold text-primary transition hover:bg-primary hover:text-white"
                         >
-                          ✓ อยู่ในตะกร้าจองแล้ว (คลิกเพื่อนำออก)
+                          ✓ ในตะกร้าแล้ว
                         </button>
                       ) : (
                         <button
                           type="button"
                           onClick={() => addItem(item, true)}
-                          className="w-full rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-primary-hover"
+                          className="flex-1 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-primary-hover"
                         >
-                          + เลือกใส่รายการจองคิวติดตั้ง
+                          + จองติดตั้ง
                         </button>
                       )}
                     </div>
@@ -572,6 +756,140 @@ export default function ShopContent() {
           )}
         </div>
       </div>
+
+      {/* Slide-over Drawer: Quick View Modal */}
+      {quickViewItem && (
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="relative flex h-full w-full max-w-md flex-col justify-between border-l border-border bg-surface p-6 shadow-2xl overflow-y-auto">
+            <div>
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between border-b border-border pb-4">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                    Quick View & Fitment Guarantee
+                  </span>
+                  <h3 className="font-heading text-base font-bold text-foreground line-clamp-1 mt-0.5">
+                    {quickViewItem.name}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setQuickViewItem(null)}
+                  className="rounded-lg border border-border p-2 text-muted transition hover:text-foreground"
+                >
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Multi-angle Photos */}
+              <div className="mt-4">
+                {(() => {
+                  const gallery =
+                    quickViewItem.galleryImages && quickViewItem.galleryImages.length > 0
+                      ? quickViewItem.galleryImages
+                      : getSmartProductGallery(quickViewItem.category, quickViewItem.brand, quickViewItem.name);
+                  const activeImg = gallery[quickViewActivePhoto] || quickViewItem.image;
+
+                  return (
+                    <div>
+                      <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border bg-background">
+                        <Image
+                          src={activeImg}
+                          alt={quickViewItem.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                        {quickViewActivePhoto >= 1 && (
+                          <span className="absolute bottom-2.5 left-2.5 rounded-full bg-black/85 px-2.5 py-1 text-[10px] font-semibold text-white border border-white/10 backdrop-blur">
+                            ภาพตัวอย่างติดตั้งในรถจริง
+                          </span>
+                        )}
+                        <span className="absolute top-2.5 right-2.5 rounded bg-background/90 px-2 py-0.5 text-[10px] font-mono text-muted tabular-nums">
+                          SKU: {quickViewItem.sku}
+                        </span>
+                      </div>
+
+                      <div className="mt-2.5 grid grid-cols-4 gap-2">
+                        {gallery.map((img, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setQuickViewActivePhoto(i)}
+                            className={`relative aspect-4/3 overflow-hidden rounded-lg border transition ${
+                              quickViewActivePhoto === i
+                                ? "border-primary ring-2 ring-primary/40 scale-105"
+                                : "border-border opacity-70 hover:opacity-100"
+                            }`}
+                          >
+                            <Image src={img} alt="thumb" fill className="object-cover" unoptimized />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Specs & Info */}
+              <div className="mt-5 space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-primary uppercase">{quickViewItem.brand}</span>
+                  <StockBadge item={quickViewItem} />
+                </div>
+
+                {quickViewItem.specs && quickViewItem.specs.length > 0 && (
+                  <ul className="space-y-1.5 text-xs text-muted border-t border-border pt-3">
+                    {quickViewItem.specs.map((s, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Price */}
+                <div className="rounded-xl border border-border bg-background p-3.5 text-center mt-3">
+                  <span className="text-[10px] text-muted block">ราคารวมติดตั้งและตั้งศูนย์เรียบร้อยแล้ว</span>
+                  <div className="text-2xl font-extrabold text-primary font-mono tabular-nums mt-0.5">
+                    {formatTHB(quickViewItem.partPrice + quickViewItem.laborPrice)}
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-medium block mt-0.5">
+                    ✓ ประกันศูนย์ Ackermann {quickViewItem.warrantyMonths} เดือน
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="border-t border-border pt-4 mt-4 space-y-2">
+              <button
+                type="button"
+                onClick={() => {
+                  addItem(quickViewItem, true);
+                  setQuickViewItem(null);
+                  router.push("/booking");
+                }}
+                className="w-full rounded-full bg-primary py-3 text-xs font-bold text-white shadow-md shadow-primary/25 transition hover:bg-primary-hover"
+              >
+                จองคิวติดตั้งรายการนี้ทันที (Book Now) →
+              </button>
+
+              <Link
+                href={`/shop/${encodeURIComponent(quickViewItem.id)}`}
+                onClick={() => setQuickViewItem(null)}
+                className="block text-center text-xs font-semibold text-secondary hover:text-foreground py-1"
+              >
+                ดูรายละเอียดเชิงลึกแบบเต็มหน้า →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

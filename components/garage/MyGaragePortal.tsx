@@ -278,104 +278,93 @@ export default function MyGaragePortal() {
                 <div className="flex flex-col justify-between gap-4 border-b border-border pb-5 lg:flex-row lg:items-center">
                   <div>
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <span className="font-heading text-lg font-bold text-foreground tabular-nums">
+                      <span className="font-heading text-lg font-bold text-foreground tabular-nums font-mono">
                         ใบจองคิว #{b.bookingNo}
                       </span>
-                      <span className="rounded-full border border-primary/50 bg-primary/15 px-3 py-0.5 text-xs font-semibold text-foreground">
+                      <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-0.5 text-xs font-semibold text-emerald-400">
                         {b.partsReadiness}
                       </span>
                     </div>
                     <p className="mt-1 text-xs text-muted tabular-nums">
-                      ทะเบียน:{" "}
-                      <strong className="text-foreground">
-                        {b.licensePlate}
-                      </strong>{" "}
-                      ({b.vehicleLabel}) • นัดวันที่ {b.appointmentDate} เวลา{" "}
-                      {b.appointmentSlot}
+                      ทะเบียน: <strong className="text-foreground">{b.licensePlate}</strong> ({b.vehicleLabel}) • เวลานัด: {b.appointmentDate} ({b.appointmentSlot})
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="text-left lg:text-right tabular-nums">
-                      <span className="text-xs text-muted">
-                        ช่องซ่อมที่รับผิดชอบใน ERP:
+                  <div className="flex flex-wrap items-center gap-4">
+                    {/* Minimalist Lead Tech Hotline */}
+                    <div className="rounded-xl border border-border bg-background px-3.5 py-2 text-xs">
+                      <span className="text-[10px] text-muted block">หัวหน้าช่างผู้รับผิดชอบ:</span>
+                      <span className="font-bold text-foreground block">ช่างเอก มอเตอร์สปอร์ต</span>
+                      <span className="text-[11px] text-primary font-mono tabular-nums block">
+                        สายตรง: 082-123-4567
                       </span>
-                      <p className="font-semibold text-primary">
-                        {b.bayAssigned}
-                      </p>
                     </div>
+
                     <Link
                       href={`/track/${b.bookingNo}`}
                       className="rounded-full border border-primary bg-background px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary hover:text-white"
                     >
-                      เปิดใบรับรอง QR สำหรับยื่นหน้าร้าน
+                      เปิด QR ประจำใบงาน
                     </Link>
                   </div>
                 </div>
 
-                {/* 4-Step Read-Only Progress Tracker synced from ERP Kanban */}
-                <div className="mt-6">
-                  <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-secondary">
-                      สถานะงานซ่อม 4 ขั้นตอนจากหน้างาน Workshop (Live ERP Tracker)
-                    </h3>
-                    <div className="flex items-center gap-1.5 text-[11px] text-muted">
-                      <span>จำลองเปลี่ยนสถานะจากฝั่งช่าง ERP:</span>
-                      {[1, 2, 3, 4].map((st) => (
-                        <button
-                          key={st}
-                          type="button"
-                          onClick={() =>
-                            setStageOverrides((prev) => ({
-                              ...prev,
-                              [b.bookingNo]: st,
-                            }))
-                          }
-                          className={`rounded px-2 py-0.5 font-semibold transition ${
-                            currentStage === st
-                              ? "bg-primary text-white"
-                              : "border border-border bg-background text-muted hover:text-foreground"
-                          }`}
-                        >
-                          ขั้นที่ {st}
-                        </button>
-                      ))}
+                {/* Minimalist Live Workshop Tracker Status Bar */}
+                <div className="mt-5 rounded-2xl border border-primary/40 bg-gradient-to-r from-primary/10 via-surface to-background p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+                    </span>
+                    <div>
+                      <span className="text-[11px] text-muted block uppercase tracking-wider font-semibold">
+                        สถานะงานซ่อมปัจจุบัน (Live Workshop Status)
+                      </span>
+                      <p className="font-heading text-sm font-bold text-foreground">
+                        {REPAIR_STAGES[currentStage - 1]?.th} ({REPAIR_STAGES[currentStage - 1]?.en})
+                      </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                  <div className="text-left sm:text-right font-mono tabular-nums">
+                    <span className="text-[10px] text-muted block">เวลาส่งมอบประเมิน:</span>
+                    <span className="text-xs font-bold text-emerald-400">
+                      {currentStage === 4 ? "พร้อมส่งมอบทันที" : "วันนี้ 16:30 น. (ตรงเวลา)"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 4-Step Sleek Minimal Progress Bar */}
+                <div className="mt-5">
+                  <div className="grid gap-2 sm:grid-cols-4">
                     {REPAIR_STAGES.map((stage) => {
                       const done = currentStage >= stage.step;
                       const current = currentStage === stage.step;
                       return (
                         <div
                           key={stage.step}
-                          className={`rounded-xl border p-4 transition ${
+                          className={`rounded-xl border p-3.5 transition ${
                             current
-                              ? "border-primary bg-background"
+                              ? "border-primary bg-background shadow-md shadow-primary/10"
                               : done
-                              ? "border-border bg-background/70"
-                              : "border-border bg-background/30 opacity-50"
+                              ? "border-border bg-background/80"
+                              : "border-border bg-background/30 opacity-40"
                           }`}
                         >
-                          <div className="flex items-center justify-between text-xs tabular-nums">
-                            <span
-                              className={`font-bold ${
-                                current ? "text-primary" : "text-muted"
-                              }`}
-                            >
-                              STEP 0{stage.step}
+                          <div className="flex items-center justify-between text-xs tabular-nums font-mono">
+                            <span className={`font-bold ${current ? "text-primary" : "text-muted"}`}>
+                              0{stage.step}
                             </span>
                             {done && (
-                              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                                {current ? "กำลังดำเนินการ" : "เสร็จสิ้น"}
+                              <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[9px] font-semibold text-primary">
+                                {current ? "กำลังทำ" : "เสร็จสิ้น"}
                               </span>
                             )}
                           </div>
-                          <p className="mt-2 font-heading text-sm font-semibold text-foreground">
+                          <p className="mt-1 font-heading text-xs font-bold text-foreground">
                             {stage.th}
                           </p>
-                          <p className="text-[11px] text-muted">{stage.en}</p>
+                          <p className="text-[10px] text-muted">{stage.en}</p>
                         </div>
                       );
                     })}

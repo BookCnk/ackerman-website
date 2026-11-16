@@ -1,6 +1,7 @@
 import UrbanIntroCurtain from "@/components/home/UrbanIntroCurtain";
 import Header from "@/components/home/Header";
 import Hero from "@/components/home/Hero";
+import InteractiveStanceStudio from "@/components/home/InteractiveStanceStudio";
 import UrbanShowcaseSections from "@/components/home/UrbanShowcaseSections";
 import {
   PopularCatalogSection,
@@ -21,19 +22,22 @@ export default function Home() {
         {/* 2. Fullscreen Video Hero + Quick Fitment Dock */}
         <Hero />
 
-        {/* 3. Bespoke Banners, Video Showcase & One of One Builds */}
+        {/* 3. Interactive Stance & Fitment Studio (3-Chassis + 4 Layered Hotspots) */}
+        <InteractiveStanceStudio />
+
+        {/* 4. Bespoke Banners, Video Showcase & One of One Builds */}
         <UrbanShowcaseSections />
 
-        {/* 4. Shop by Category & Chassis Selector */}
+        {/* 5. Shop by Category & Chassis Selector */}
         <ShopByCategoryAndVehicleSection />
 
-        {/* 5. Signature Builds with BOM & Direct Booking */}
+        {/* 6. Signature Builds with BOM & Direct Booking */}
         <FeaturedBuilds />
 
-        {/* 6. Direct Popular Catalog with All-Inclusive Pricing */}
+        {/* 7. Direct Popular Catalog with All-Inclusive Pricing */}
         <PopularCatalogSection />
 
-        {/* 7. Workshop Engineering Standards & Diagnostics */}
+        {/* 8. Workshop Engineering Standards & Diagnostics */}
         <Services />
       </main>
 
