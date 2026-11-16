@@ -18,6 +18,7 @@ import Footer from "@/components/home/Footer";
 export default function Home() {
   return (
     <>
+      <UrbanIntroCurtain />
       {/* 1. Top Header Navigation with IND Mega-Menus */}
       <Header />
 

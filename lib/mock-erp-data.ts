@@ -14,17 +14,10 @@ export type CatalogItem = {
   id: string;
   sku: string;
   name: string;
-  category:
-    | "Performance"
-    | "Exterior"
-    | "Exhaust"
-    | "Interior"
-    | "Suspension"
-    | "Wheels"
-    | "Brakes"
-    | "Lifestyle";
+  category: string;
   brand: string;
   image: string;
+  galleryImages?: string[];
   partPrice: number;
   laborPrice: number;
   installHours: number;
@@ -36,6 +29,238 @@ export type CatalogItem = {
   warrantyMonths: number;
   warrantyKm: number;
 };
+
+export function getSmartProductGallery(
+  categoryName?: string,
+  brand?: string,
+  productName?: string
+): string[] {
+  const normCat = (categoryName || "").toLowerCase();
+  const normBrand = (brand || "").toLowerCase();
+  const normName = (productName || "").toLowerCase();
+
+  // 1. Tires: Clean 4-photo set for all tires
+  if (normCat.includes("tire") || normCat.includes("ยาง") || normBrand.includes("michelin") || normBrand.includes("bridgestone") || normBrand.includes("yokohama")) {
+    return [
+      "/images/products/tire-1a.webp",
+      "/sites/ind/latest-bronco-wheel.jpg",
+      "/sites/ind/hero-g87-m2.jpg",
+      "/sites/urban/one-scott-cullinan.webp",
+    ];
+  }
+
+  // 2. Wheels
+  if (normCat.includes("wheel") || normCat.includes("ล้อ") || normBrand.includes("bbs") || normBrand.includes("vossen")) {
+    return [
+      "/sites/ind/cat-wheels.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/latest-bbs-g99-m5.jpg",
+      "/sites/ind/hero-bronco-bbs.jpg",
+    ];
+  }
+
+  // 3. Brakes (Calipers, Pads, Rotors, Oil)
+  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก") || normBrand.includes("brembo") || normBrand.includes("endless") || normBrand.includes("ap racing")) {
+    return [
+      "/sites/ind/cat-brakes.jpg",
+      "/sites/ind/brand-mmx.jpg",
+      "/sites/urban/one-grigio-rrs.webp",
+      "/sites/ind/hero-g87-m2.jpg",
+    ];
+  }
+
+  // 4. Suspension, Coilovers, Springs, Shocks
+  if (normCat.includes("shock") || normCat.includes("suspension") || normCat.includes("spring") || normCat.includes("ช่วงล่าง") || normBrand.includes("kw") || normBrand.includes("ohlins")) {
+    return [
+      "/sites/ind/cat-suspension.jpg",
+      "/sites/ind/brand-fallline.jpg",
+      "/images/service-4.webp",
+      "/sites/ind/hero-g87-m2.jpg",
+    ];
+  }
+
+  // 5. Exhaust
+  if (normCat.includes("exhaust") || normCat.includes("ท่อ") || normBrand.includes("eisenmann") || normBrand.includes("akrapov") || normBrand.includes("supersprint")) {
+    return [
+      "/sites/ind/cat-exhaust.jpg",
+      "/sites/ind/brand-eisenmann.jpg",
+      "/sites/urban/one-jesy-gwagon.webp",
+      "/sites/urban/banner-avontur.webp",
+    ];
+  }
+
+  // 6. Engine Oil & Maintenance Fluids
+  if (normCat.includes("oil") || normCat.includes("น้ำมัน") || normBrand.includes("motul") || normBrand.includes("castrol")) {
+    return [
+      "/sites/ind/cat-performance.jpg",
+      "/images/products/soap-2a.webp",
+      "/images/service-1.webp",
+      "/images/service-3.webp",
+    ];
+  }
+
+  // 7. Air Filter & Carbon Intake
+  if (normCat.includes("filter") || normCat.includes("กรอง") || normBrand.includes("eventuri") || normBrand.includes("k&n")) {
+    return [
+      "/sites/ind/brand-eventuri.jpg",
+      "/sites/urban/discover-parts.webp",
+      "/images/service-2.webp",
+      "/sites/ind/hero-g65-x5.jpg",
+    ];
+  }
+
+  // 8. Body Parts, Spoilers, Aero
+  if (normCat.includes("body") || normCat.includes("spoiler") || normCat.includes("แต่ง") || normCat.includes("carbon") || normBrand.includes("alpha-n") || normBrand.includes("3d design")) {
+    return [
+      "/sites/ind/cat-exterior.jpg",
+      "/sites/urban/discover-carbon-fibre.webp",
+      "/sites/ind/brand-alphan.jpg",
+      "/sites/urban/one-visionnaire.webp",
+    ];
+  }
+
+  // 9. Batteries
+  if (normCat.includes("battery") || normCat.includes("แบต") || normBrand.includes("gs") || normBrand.includes("fb")) {
+    return [
+      "/sites/ind/cat-performance.jpg",
+      "/images/service-5.webp",
+      "/images/service-1.webp",
+      "/sites/urban/discover-showroom.webp",
+    ];
+  }
+
+  // General Fallback
+  return [
+    "/sites/urban/discover-parts.webp",
+    "/sites/ind/cat-performance.jpg",
+    "/images/service-1.webp",
+    "/sites/urban/banner-avontur.webp",
+  ];
+}
+
+export function getSmartProductImage(
+  categoryName?: string,
+  brand?: string,
+  productName?: string
+): string {
+  const normCat = (categoryName || "").toLowerCase();
+  const normBrand = (brand || "").toLowerCase();
+  const normName = (productName || "").toLowerCase();
+
+  // 1. High-priority Brand Match
+  if (normBrand.includes("eventuri") || normName.includes("eventuri")) return "/sites/ind/brand-eventuri.jpg";
+  if (normBrand.includes("bbs") || normName.includes("bbs")) return "/sites/ind/latest-bbs-g99-m5.jpg";
+  if (normBrand.includes("eisenmann") || normName.includes("eisenmann")) return "/sites/ind/brand-eisenmann.jpg";
+  if (normBrand.includes("akrapov") || normName.includes("akrapov")) return "/sites/ind/cat-exhaust.jpg";
+  if (normBrand.includes("alpha-n") || normName.includes("alpha-n")) return "/sites/ind/brand-alphan.jpg";
+  if (normBrand.includes("3d design") || normName.includes("3ddesign")) return "/sites/ind/brand-3ddesign.jpg";
+  if (normBrand.includes("karbonius") || normName.includes("karbonius")) return "/sites/ind/brand-karbonius.jpg";
+  if (normBrand.includes("supersprint") || normName.includes("supersprint")) return "/sites/ind/brand-supersprint.jpg";
+  if (normBrand.includes("brembo") || normName.includes("brembo")) return "/sites/ind/cat-brakes.jpg";
+  if (normBrand.includes("endless") || normName.includes("endless")) return "/sites/ind/cat-brakes.jpg";
+  if (normBrand.includes("ap racing") || normName.includes("ap racing")) return "/sites/ind/cat-brakes.jpg";
+  if (normBrand.includes("kw") || normName.includes("kw ")) return "/sites/ind/cat-suspension.jpg";
+  if (normBrand.includes("ohlins") || normBrand.includes("öhlins")) return "/sites/ind/cat-suspension.jpg";
+  if (normBrand.includes("vossen") || normName.includes("vossen")) return "/sites/urban/discover-wheels.webp";
+  if (normBrand.includes("michelin") || normName.includes("michelin") || normBrand.includes("yokohama") || normBrand.includes("bridgestone")) {
+    return "/images/products/tire-1a.webp";
+  }
+
+  // 2. Category Match
+  if (normCat.includes("tire") || normCat.includes("ยาง")) return "/images/products/tire-1a.webp";
+  if (normCat.includes("wheel") || normCat.includes("ล้อ")) return "/sites/ind/cat-wheels.jpg";
+  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก")) {
+    return "/sites/ind/cat-brakes.jpg";
+  }
+  if (normCat.includes("shock") || normCat.includes("suspension") || normCat.includes("spring") || normCat.includes("ช่วงล่าง")) {
+    return "/sites/ind/cat-suspension.jpg";
+  }
+  if (normCat.includes("exhaust") || normCat.includes("ท่อ")) return "/sites/ind/cat-exhaust.jpg";
+  if (normCat.includes("engine oil") || normCat.includes("oil") || normCat.includes("น้ำมัน")) return "/sites/ind/cat-performance.jpg";
+  if (normCat.includes("filter") || normCat.includes("กรอง")) return "/sites/urban/discover-parts.webp";
+  if (normCat.includes("body") || normCat.includes("spoiler") || normCat.includes("แต่ง") || normCat.includes("carbon")) {
+    return "/sites/ind/cat-exterior.jpg";
+  }
+  if (normCat.includes("battery") || normCat.includes("แบต")) return "/sites/ind/cat-performance.jpg";
+
+  return "/sites/urban/discover-parts.webp";
+}
+
+export function getCategoryFallbackImage(categoryName?: string): string {
+  return getSmartProductImage(categoryName);
+}
+
+export function getCategoryLaborInfo(categoryName?: string): {
+  laborPrice: number;
+  installHours: number;
+  warrantyMonths: number;
+  warrantyKm: number;
+} {
+  const norm = (categoryName || "").toLowerCase();
+  if (norm.includes("oil") || norm.includes("น้ำมัน") || norm.includes("filter") || norm.includes("กรอง")) {
+    return { laborPrice: 500, installHours: 1, warrantyMonths: 6, warrantyKm: 10000 };
+  }
+  if (norm.includes("tire") || norm.includes("ยาง")) {
+    return { laborPrice: 600, installHours: 1, warrantyMonths: 24, warrantyKm: 50000 };
+  }
+  if (norm.includes("wheel") || norm.includes("ล้อ")) {
+    return { laborPrice: 800, installHours: 1.5, warrantyMonths: 24, warrantyKm: 40000 };
+  }
+  if (norm.includes("brake") || norm.includes("caliper") || norm.includes("pad") || norm.includes("rotor") || norm.includes("เบรก")) {
+    return { laborPrice: 1000, installHours: 1.5, warrantyMonths: 12, warrantyKm: 20000 };
+  }
+  if (norm.includes("battery") || norm.includes("แบต")) {
+    return { laborPrice: 500, installHours: 0.5, warrantyMonths: 12, warrantyKm: 20000 };
+  }
+  if (norm.includes("shock") || norm.includes("suspension") || norm.includes("spring") || norm.includes("ช่วงล่าง")) {
+    return { laborPrice: 2500, installHours: 3, warrantyMonths: 24, warrantyKm: 40000 };
+  }
+  if (norm.includes("exhaust") || norm.includes("ท่อ") || norm.includes("body") || norm.includes("spoiler") || norm.includes("แต่ง")) {
+    return { laborPrice: 3500, installHours: 4, warrantyMonths: 24, warrantyKm: 40000 };
+  }
+  return { laborPrice: 800, installHours: 1.5, warrantyMonths: 12, warrantyKm: 20000 };
+}
+
+export function buildItemSpecs(
+  brand?: string,
+  model?: string,
+  attributes?: Record<string, any>,
+  categoryName?: string
+): string[] {
+  const specs: string[] = [];
+  const attrs = attributes || {};
+
+  // 1. Description from attributes or fallback
+  if (attrs.description && typeof attrs.description === "string") {
+    specs.push(attrs.description);
+  } else {
+    specs.push(`อะไหล่และอุปกรณ์ตกแต่งมาตรฐานศูนย์ Ackermann Garage (${categoryName || "Performance"})`);
+  }
+
+  // 2. Fitment / Size detail
+  if (attrs.carModel) {
+    specs.push(`รุ่นรถที่รองรับ: ${attrs.carModel}`);
+  } else if (attrs.tireSize || attrs.size_label) {
+    specs.push(`ขนาดและสเปก: ${attrs.tireSize || attrs.size_label}`);
+  } else if (attrs.volume) {
+    specs.push(`ปริมาตรบรรจุ: ${attrs.volume}${attrs.viscosity ? ` • ความหนืด ${attrs.viscosity}` : ""}`);
+  } else if (attrs.amp) {
+    specs.push(`ขนาดไฟ: ${attrs.amp}Ah (${attrs.cca ? `${attrs.cca} CCA` : "มาตรฐานสูง"})`);
+  } else if (model) {
+    specs.push(`ซีรีส์/โมเดล: ${model}`);
+  } else {
+    specs.push("รองรับการติดตั้งกับรถยุโรปและรถญี่ปุ่นสมรรถนะสูง");
+  }
+
+  // 3. Brand & Quality guarantee
+  if (brand && brand !== "Ackermann Standard") {
+    specs.push(`แบรนด์ ${brand} แท้ 100% พร้อมบันทึกรับประกันลงระบบ ERP`);
+  } else {
+    specs.push("ผ่านการตรวจเช็กและบันทึกลงระบบคลังสินค้า ERP เรียบร้อย");
+  }
+
+  return specs;
+}
 
 export type ShowcaseBuild = {
   id: string;
@@ -914,9 +1139,12 @@ export function calculateDeposit(items: CatalogItem[]): {
   if (items.length === 0) {
     depositAmount = 0;
     depositRuleText = "ยังไม่ได้เลือกรายการจอง";
+  } else if (hasPreOrder) {
+    depositAmount = Math.round(partsTotal * 0.5);
+    depositRuleText = "มัดจำสินค้าพรีออเดอร์ 50% ของค่าสินค้า (หักลดยอดวันรับรถ)";
   } else if (partsTotal > 0) {
-    depositAmount = Math.round(partsTotal * 0.25);
-    depositRuleText = "มัดจำสั่งจอง/ล็อกสต็อกอะไหล่ 25% ของค่าสินค้า (หักลดยอดวันรับรถ)";
+    depositAmount = Math.min(2000, partsTotal);
+    depositRuleText = `มัดจำล็อกสต็อกอะไหล่ ${formatTHB(depositAmount)} (หักลดยอดวันรับรถ)`;
   } else {
     depositAmount = 1000;
     depositRuleText = "มัดจำจองคิวช่องซ่อมบริการทั่วไปคงที่ ฿1,000.00 (หักลดยอดวันรับรถ)";

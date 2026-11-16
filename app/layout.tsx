@@ -3,7 +3,6 @@ import { Kanit, Prompt } from "next/font/google";
 import { BookingProvider } from "@/components/booking/BookingContext";
 import { AuthProvider } from "@/components/auth/AuthContext";
 import AuthModal from "@/components/auth/AuthModal";
-import UrbanIntroCurtain from "@/components/home/UrbanIntroCurtain";
 import SlideOverDrawer from "@/components/booking/SlideOverDrawer";
 import "./globals.css";
 
@@ -35,7 +34,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <AuthProvider>
           <BookingProvider>
-            <UrbanIntroCurtain />
             {children}
             <SlideOverDrawer />
             <AuthModal />

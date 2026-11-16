@@ -42,3 +42,8 @@ next-env.d.ts
 
 # local graphify
 graphify-out/
+
+# outbox store
+.outbox_store.json
+
+scratch/

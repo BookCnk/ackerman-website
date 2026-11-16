@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { dispatchBookingToErp } from "@/lib/erp-client";
 import { StockStatus } from "@/lib/mock-erp-data";
+import { saveOutboxBooking, updateBookingSyncStatus } from "@/lib/outbox-store";
 
 type WebhookRequestBody = {
+  bookingNo?: string;
+  holdToken?: string;
   customerName: string;
   customerPhone: string;
   licensePlate: string;
@@ -44,7 +47,7 @@ export async function POST(request: Request) {
     const min = String(now.getMinutes()).padStart(2, "0");
     const randomSuffix = String(Math.floor(100 + Math.random() * 900));
 
-    const bookingNo = `BK-${yyyy}${mm}${dd}-${randomSuffix}`;
+    const bookingNo = body.bookingNo || `BK-${yyyy}${mm}${dd}-${randomSuffix}`;
     const gatewayRef = `chrg_live_ack_${Date.now().toString(36)}`;
 
     const hasPreOrder = body.items.some((i) => i.stockStatus === "PRE_ORDER");
@@ -85,18 +88,34 @@ export async function POST(request: Request) {
       paymentMethod: body.paymentMethod,
     };
 
-    const dispatchResult = await dispatchBookingToErp(erpBookingRecord);
+    // 1. Save into Outbox Store first (Outbox Pattern)
+    saveOutboxBooking({
+      ...erpBookingRecord,
+      syncStatus: "PENDING_ERP_SYNC",
+      retryCount: 0,
+      holdToken: body.holdToken,
+    });
+
+    // 2. Dispatch to Private ERP via HMAC-authenticated Bridge API
+    const dispatchResult = await dispatchBookingToErp(erpBookingRecord, body.holdToken);
+
+    // 3. Update Outbox Status based on ERP delivery result
+    if (dispatchResult.deliveredToLiveErp) {
+      updateBookingSyncStatus(bookingNo, "DEPOSIT_PAID_ERP_SYNCED");
+    } else {
+      updateBookingSyncStatus(bookingNo, "PENDING_ERP_SYNC", dispatchResult.error || "ERP Offline");
+    }
 
     const erpSyncActions = [
       {
         module: "Workshop Appointments Calendar",
-        action: `สร้างคิวนัดหมาย ${bookingNo} ลงตารางช่องซ่อม "${bayAssigned}" วันที่ ${erpBookingRecord.appointmentDate}`,
+        action: `สร้างคิวนัดหมาย ${bookingNo} ลงตารางนัดหมาย วันที่ ${erpBookingRecord.appointmentDate} (${erpBookingRecord.appointmentSlot})`,
         badge: partsReadiness,
       },
       {
         module: "Warehouse & Inventory (FIFO Lot Reservation)",
         action: hasPreOrder
-          ? "ล็อกสต็อกรายการที่มีของ และสร้างใบขอซื้ออัตโนมัติ (Draft Inbound PO) สำหรับรายการ Pre-Order"
+          ? "ล็อกสต็อกรายการที่มีของ และสร้างใบสั่งของพิเศษอัตโนมัติ (Draft Inbound PO / Special Order) สำหรับรายการ Pre-Order"
           : "ตัดจองสต็อกอะไหล่ (Reserved Stock) ล็อกไว้ให้ทะเบียน " + body.licensePlate,
         badge: "Stock Reserved",
       },
@@ -104,13 +123,15 @@ export async function POST(request: Request) {
         module: "Finance & Cash Flow Hub",
         action: `บันทึกยอดเงินมัดจำรับล่วงหน้า ฿${body.depositPaid.toLocaleString("th-TH", {
           minimumFractionDigits: 2,
-        })} (Ref: ${gatewayRef}) รอหักลบตอนปิดบิล POS`,
-        badge: "Verified via Gateway Webhook",
+        })} (Ref: ${gatewayRef}) เข้าบัญชีกระแสเงินสด รอหักลบตอนปิดบิล POS`,
+        badge: dispatchResult.deliveredToLiveErp ? "Synced to Live ERP" : "Queued in Storefront Outbox",
       },
     ];
 
     return NextResponse.json({
       ok: true,
+      deliveredToLiveErp: dispatchResult.deliveredToLiveErp,
+      syncStatus: dispatchResult.deliveredToLiveErp ? "DEPOSIT_PAID_ERP_SYNCED" : "PENDING_ERP_SYNC",
       event: "payment_gateway.deposit.succeeded",
       erpEndpoint: `POST ${dispatchResult.erpEndpoint}`,
       httpStatus: dispatchResult.httpStatus,
@@ -118,9 +139,10 @@ export async function POST(request: Request) {
       booking: erpBookingRecord,
       erpSyncActions,
     });
-  } catch {
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err.message : "Invalid booking payload";
     return NextResponse.json(
-      { ok: false, error: "Invalid booking payload" },
+      { ok: false, error },
       { status: 400 }
     );
   }

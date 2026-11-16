@@ -158,64 +158,28 @@ export default function Header() {
               Home
             </Link>
 
-            <button
-              type="button"
-              onMouseEnter={() => setActiveMega("VEHICLE")}
-              onClick={() =>
-                setActiveMega(activeMega === "VEHICLE" ? null : "VEHICLE")
-              }
-              className={`inline-flex items-center gap-1.5 text-sm font-semibold tracking-wide uppercase transition whitespace-nowrap ${
-                activeMega === "VEHICLE"
-                  ? "text-primary"
-                  : "text-neutral-300 hover:text-white"
-              }`}
-            >
-              <span>Vehicles</span>
-              <svg
-                className="h-3 w-3 opacity-70"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-
-            <button
-              type="button"
-              onMouseEnter={() => setActiveMega("CATEGORY")}
-              onClick={() =>
-                setActiveMega(activeMega === "CATEGORY" ? null : "CATEGORY")
-              }
-              className={`inline-flex items-center gap-1.5 text-sm font-semibold tracking-wide uppercase transition whitespace-nowrap ${
-                activeMega === "CATEGORY"
-                  ? "text-primary"
-                  : "text-neutral-300 hover:text-white"
-              }`}
-            >
-              <span>Parts</span>
-              <svg
-                className="h-3 w-3 opacity-70"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </button>
-
             <Link
-              href="/showcase"
+              href="/gallery"
               onMouseEnter={() => setActiveMega(null)}
               className={`text-sm font-semibold tracking-wide uppercase transition whitespace-nowrap ${
-                pathname.startsWith("/showcase")
-                  ? "text-primary"
+                pathname.startsWith("/gallery") || pathname.startsWith("/showcase")
+                  ? "text-primary font-bold"
                   : "text-neutral-300 hover:text-white"
               }`}
             >
-              Builds
+              Gallery
+            </Link>
+
+            <Link
+              href="/shop"
+              onMouseEnter={() => setActiveMega(null)}
+              className={`text-sm font-semibold tracking-wide uppercase transition whitespace-nowrap ${
+                pathname.startsWith("/shop")
+                  ? "text-primary font-bold"
+                  : "text-neutral-300 hover:text-white"
+              }`}
+            >
+              Shop
             </Link>
 
             <Link
@@ -512,25 +476,25 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-md px-3 py-2 text-muted hover:bg-surface hover:text-foreground"
                 >
-                  หน้าแรก
+                  หน้าแรก (Home)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/gallery"
+                  onClick={() => setMobileOpen(false)}
+                  className="block rounded-md px-3 py-2 font-medium text-foreground hover:bg-surface"
+                >
+                  แกลเลอรีผลงาน (Gallery)
                 </Link>
               </li>
               <li>
                 <Link
                   href="/shop"
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2 text-muted hover:bg-surface hover:text-foreground"
+                  className="block rounded-md px-3 py-2 font-medium text-foreground hover:bg-surface"
                 >
-                  Parts & Vehicles
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/showcase"
-                  onClick={() => setMobileOpen(false)}
-                  className="block rounded-md px-3 py-2 text-muted hover:bg-surface hover:text-foreground"
-                >
-                  Builds & Showcase
+                  ร้านค้า / อะไหล่แต่ง (Shop)
                 </Link>
               </li>
               <li>
@@ -539,7 +503,7 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-md px-3 py-2 text-muted hover:bg-surface hover:text-foreground"
                 >
-                  Booking & Deposit
+                  จองคิวติดตั้ง (Booking)
                 </Link>
               </li>
               <li>
@@ -548,7 +512,7 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className="block rounded-md px-3 py-2 text-muted hover:bg-surface hover:text-foreground"
                 >
-                  My Garage
+                  โรงรถของฉัน (My Garage)
                 </Link>
               </li>
               <li>

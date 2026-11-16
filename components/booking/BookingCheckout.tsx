@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useBooking } from "@/components/booking/BookingContext";
 import {
@@ -12,15 +12,20 @@ import {
 } from "@/lib/mock-erp-data";
 
 const TIME_SLOTS = [
-  "09.00 - 12.00 น. (รอบเช้า — ลิฟท์ซ่อมช่วงล่าง/เบรก)",
-  "13.00 - 16.30 น. (รอบบ่าย — ลิฟท์ซ่อมช่วงล่าง/ท่อ/ล้อ)",
-  "09.00 - 18.00 น. (เต็มวัน — งานชุดใหญ่ / ติดฟิล์มใส PPF)",
+  "09:00 - 10:30 น. (ช่วงเช้า)",
+  "10:30 - 12:00 น. (ช่วงสาย)",
+  "13:00 - 14:30 น. (ช่วงบ่ายต้น)",
+  "14:30 - 16:00 น. (ช่วงบ่ายแก่)",
+  "16:00 - 17:30 น. (ช่วงเย็น)",
 ];
 
 type WebhookResult = {
   ok: boolean;
+  deliveredToLiveErp?: boolean;
+  syncStatus?: "DEPOSIT_PAID_ERP_SYNCED" | "PENDING_ERP_SYNC";
   event: string;
   erpEndpoint: string;
+  httpStatus?: number;
   trackingUrl?: string;
   booking: ErpBookingRecord;
   erpSyncActions: {
@@ -115,10 +120,17 @@ export default function BookingCheckout() {
         <div className="rounded-2xl border border-primary bg-surface p-6 sm:p-8">
           <div className="flex flex-col justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-center">
             <div>
-              <span className="inline-flex items-center gap-2 rounded-full bg-primary/20 px-3.5 py-1 text-xs font-semibold text-primary">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                ชำระเงินมัดจำสำเร็จ & ซิงค์เข้าสู่ระบบ Ackermann ERP เรียบร้อยแล้ว
-              </span>
+              {webhookResult.deliveredToLiveErp ? (
+                <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-400">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  ชำระเงินมัดจำสำเร็จ & ซิงค์เข้าสู่ระบบ Ackermann ERP เรียบร้อยแล้ว (Live 200 OK)
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2 rounded-full bg-amber-500/20 px-3.5 py-1 text-xs font-semibold text-amber-400">
+                  <span className="h-2 w-2 rounded-full bg-amber-400" />
+                  ชำระเงินมัดจำสำเร็จ & บันทึกเข้า Storefront Outbox แล้ว (สถานะ PENDING_ERP_SYNC — พร้อมส่งเข้า ERP ทันที)
+                </span>
+              )}
               <h2 className="mt-2 font-heading text-2xl font-bold sm:text-3xl tabular-nums">
                 ใบยืนยันการจองคิวติดตั้ง #{b.bookingNo}
               </h2>
@@ -187,9 +199,9 @@ export default function BookingCheckout() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-muted">ช่องซ่อมที่ระบบล็อกให้:</dt>
+                  <dt className="text-muted">ช่วงเวลานัดหมายเข้ารับบริการ:</dt>
                   <dd className="mt-0.5 font-semibold text-foreground">
-                    {b.bayAssigned}
+                    {b.appointmentSlot}
                   </dd>
                 </div>
               </dl>
@@ -355,7 +367,7 @@ export default function BookingCheckout() {
             className="rounded-2xl border border-border bg-surface p-6"
           >
             <h2 className="font-heading text-xl font-bold">
-              2. ข้อมูลรถยนต์และเลือกวันเวลาเข้าช่องซ่อม (ERP Bay Scheduling)
+              2. ข้อมูลรถยนต์และเลือกวันเวลาเข้ารับบริการ (Service Schedule)
             </h2>
 
             {summary.maxLeadTimeDays > 0 && (
@@ -433,7 +445,7 @@ export default function BookingCheckout() {
 
               <div>
                 <label className="block text-xs font-medium text-muted">
-                  วันที่ต้องการนัดเข้าช่องซ่อม
+                  วันที่ต้องการนัดหมายเข้ารับบริการ
                 </label>
                 <input
                   type="date"
@@ -447,7 +459,7 @@ export default function BookingCheckout() {
 
               <div className="sm:col-span-2">
                 <label className="block text-xs font-medium text-muted">
-                  ช่วงเวลาและช่องซ่อม (Workshop Bay Slot)
+                  ช่วงเวลาเข้ารับบริการ (Service Time Slot)
                 </label>
                 <select
                   value={appointmentSlot}
@@ -574,7 +586,8 @@ export default function BookingCheckout() {
                     {formatTHB(summary.depositAmount)}
                   </span>
                 </div>
-                <p className="text-[11px] text-muted">
+
+                <p className="mt-2 text-[11px] text-muted">
                   ไม่ต้องแนบสลิป ระบบตรวจจับยอดโอนผ่าน Payment Gateway Webhook อัตโนมัติ
                 </p>
               </div>

@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useBooking } from "@/components/booking/BookingContext";
-import { INITIAL_ERP_BOOKINGS, formatTHB } from "@/lib/mock-erp-data";
+import { INITIAL_ERP_BOOKINGS, formatTHB, ErpBookingRecord } from "@/lib/mock-erp-data";
 
 const REPAIR_STAGES = [
   {
@@ -38,10 +39,30 @@ export default function TrackBookingPortal({
 }) {
   const { bookings } = useBooking();
 
-  const record =
+  const fallbackRecord =
     bookings.find(
       (b) => b.bookingNo.toLowerCase() === bookingNo.toLowerCase()
     ) ?? INITIAL_ERP_BOOKINGS[0];
+
+  const [liveRecord, setLiveRecord] = useState<ErpBookingRecord>(fallbackRecord);
+
+  useEffect(() => {
+    fetch("/api/erp/outbox?status=all")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok && Array.isArray(data.bookings)) {
+          const matched = data.bookings.find(
+            (b: ErpBookingRecord) => b.bookingNo.toLowerCase() === bookingNo.toLowerCase()
+          );
+          if (matched) {
+            setLiveRecord(matched);
+          }
+        }
+      })
+      .catch(() => {});
+  }, [bookingNo]);
+
+  const record = liveRecord;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">

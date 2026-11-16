@@ -2,15 +2,35 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useBooking } from "@/components/booking/BookingContext";
 
 export default function UrbanIntroCurtain() {
+  const pathname = usePathname();
   const { introReplayCount } = useBooking();
   const [phase, setPhase] = useState<"DRAWING" | "REVEALED" | "SLIDING_UP" | "HIDDEN">(
-    "DRAWING"
+    "HIDDEN"
   );
 
   useEffect(() => {
+    // Strictly ONLY play on Homepage ("/")
+    if (pathname !== "/") {
+      setPhase("HIDDEN");
+      return;
+    }
+
+    // Don't replay on normal page transitions unless Replay button clicked
+    try {
+      const hasPlayed = sessionStorage.getItem("ackermann_intro_played");
+      if (hasPlayed && introReplayCount === 0) {
+        setPhase("HIDDEN");
+        return;
+      }
+      sessionStorage.setItem("ackermann_intro_played", "true");
+    } catch {
+      // Ignore storage errors
+    }
+
     setPhase("DRAWING");
 
     // Phase 1: Draw SVG frame & reveal typography
@@ -33,15 +53,15 @@ export default function UrbanIntroCurtain() {
       clearTimeout(slideTimer);
       clearTimeout(hideTimer);
     };
-  }, [introReplayCount]);
+  }, [introReplayCount, pathname]);
 
-  if (phase === "HIDDEN") return null;
+  if (phase === "HIDDEN" || pathname !== "/") return null;
 
   return (
     <div
       aria-hidden="true"
       className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0a0a0a] transition-transform duration-1000 ease-[cubic-bezier(0.77,0,0.175,1)] ${
-        phase === "SLIDING_UP" ? "-translate-y-full" : "translate-y-0"
+        phase === "SLIDING_UP" ? "-translate-y-full pointer-events-none" : "translate-y-0"
       }`}
     >
       {/* Background ambient radial glow */}
