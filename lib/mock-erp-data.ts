@@ -113,8 +113,8 @@ export function getSmartProductGallery(
   if (normName.includes("fi-r")) {
     return [
       "/images/products/wheel-bbs-fir.jpg",
+      "/sites/ind/hero-g87-m2.jpg",
       "/sites/ind/latest-bbs-g99-m5.jpg",
-      "/sites/ind/hero-bronco-bbs.jpg",
       "/sites/urban/discover-wheels.webp",
     ];
   }
@@ -122,7 +122,7 @@ export function getSmartProductGallery(
     return [
       "/images/products/wheel-bbs-lm.jpg",
       "/sites/ind/latest-bbs-g99-m5.jpg",
-      "/sites/ind/hero-bronco-bbs.jpg",
+      "/sites/ind/hero-g87-m2.jpg",
       "/sites/urban/discover-wheels.webp",
     ];
   }

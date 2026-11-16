@@ -10,7 +10,7 @@ type StanceHotspot = {
   id: "suspension" | "brakes" | "wheels" | "exhaust";
   titleTh: string;
   titleEn: string;
-  xPercent: number; // Position on car image
+  xPercent: number;
   yPercent: number;
   productName: string;
   brand: string;
@@ -39,19 +39,53 @@ const CHASSIS_BUILDS: ChassisConfig[] = [
   {
     id: "bmw-m2",
     name: "2024 BMW M2 Coupe (G87)",
-    subtitle: "Track Spec & Street Precision — M TwinPower Turbo S58",
-    categoryTag: "Track Stance (สนามแข่ง & ถนนหลวง)",
+    subtitle: "Track Spec & Street Precision — M TwinPower Turbo S58 (British Racing Green)",
+    categoryTag: "Track Stance (ตรงรูปรถ M2 คันสีเขียว 100%)",
     image: "/sites/ind/hero-g87-m2.jpg",
     fitmentSummary: {
-      frontWheel: "18x9.5 ET22 5H112 (หน้าเต็มซุ้ม)",
-      rearWheel: "19x10.5 ET25 5H112 (เว้าลึกพิเศษ)",
-      tires: "Michelin Pilot Sport 5 (275/35 R19 & 285/30 R20)",
+      frontWheel: "20x9.5 ET20 5H112 (BBS FI-R Citrine Gold)",
+      rearWheel: "20x10.5 ET22 5H112 (BBS FI-R Citrine Gold)",
+      tires: "Michelin Pilot Sport 4S (275/35 R19 & 285/30 R20)",
       drop: "-30mm (KW V3 Compression & Rebound Balanced)",
     },
     hotspots: [
       {
+        id: "wheels",
+        titleTh: "ล้อฟอร์จเจาะก้านสีทอง (ตรงรูปรถ 100%)",
+        titleEn: "BBS FI-R Monobloc Forged Citrine Gold",
+        xPercent: 25,
+        yPercent: 75,
+        productName: "BBS FI-R Monobloc Forged 20x9.5 / 20x10.5 ET20 Citrine Gold",
+        brand: "BBS Forged",
+        partNo: "BBS-FIR-G87",
+        price: 245000,
+        specs: [
+          "✓ ล้อตรงรุ่นคันสีเขียว M2 ในรูป 100% (ลาย Y-Spoke สีทอง Citrine Gold)",
+          "นวัตกรรมเจาะรูลดน้ำหนักกลางก้านล้อ เบาเพียง 8.2 กก./วง",
+          "แข็งแกร่งระดับรถแข่ง GT3 ทนแรงบิดมหาศาลของเครื่องยนต์ S58",
+        ],
+        image: "/images/products/wheel-bbs-fir.jpg",
+      },
+      {
+        id: "brakes",
+        titleTh: "ชุดเบรกคาลิเปอร์แดง (ตรงรูปรถ 100%)",
+        titleEn: "Brembo GT6 Monobloc Red Calipers",
+        xPercent: 34,
+        yPercent: 72,
+        productName: "Brembo GT6 Monobloc 6-Pot Kit จาน 380mm 2-Piece",
+        brand: "Brembo",
+        partNo: "BRE-1N2.9004A",
+        price: 158000,
+        specs: [
+          "✓ คาลิเปอร์สีแดงสดตัดกับล้อทองและสีตัวรถเขียวตรงรูปเป๊ะ 100%",
+          "จานเบรก Type III Slotted คาร์บอนสูง 380mm ระบายความร้อนสูง",
+          "ระยะเบรกสั้นลง 18% รองรับการลงแทร็กระดับ Hard Braking",
+        ],
+        image: "/images/products/brake-brembo-gt6.jpg",
+      },
+      {
         id: "suspension",
-        titleTh: "ระบบช่วงล่าง & โช้คอัพ",
+        titleTh: "ระบบช่วงล่างสตรัทปรับเกลียว",
         titleEn: "KW Variant 3 Inox-Line Coilovers",
         xPercent: 28,
         yPercent: 62,
@@ -59,38 +93,16 @@ const CHASSIS_BUILDS: ChassisConfig[] = [
         brand: "KW Suspensions",
         partNo: "KW-352200AL",
         price: 115000,
-        specs: ["ปรับความหนืด Bump & Rebound แยกอิสระ", "กระบอกสแตนเลส Inox ไร้สนิมตลอดชีพ", "ลดอาการโคลงเข้าโค้งแม่นยำ 100%"],
+        specs: [
+          "จัดทรง Stance โหลดเตี้ยแนบซุ้มล้อหน้า-หลังตามภาพจริง",
+          "ปรับความหนืด Bump & Rebound แยกอิสระ 16 ระดับ",
+          "กระบอกสแตนเลส Inox ไร้สนิมตลอดอายุการใช้งาน",
+        ],
         image: "/images/products/susp-kw-v3.png",
       },
       {
-        id: "brakes",
-        titleTh: "ระบบเบรกไฮเพอร์ฟอร์แมนซ์",
-        titleEn: "Brembo GT6 Monobloc Calipers",
-        xPercent: 34,
-        yPercent: 72,
-        productName: "Brembo GT6 Monobloc 6-Pot Kit จาน 380mm 2-Piece",
-        brand: "Brembo",
-        partNo: "BRE-1N2.9004A",
-        price: 158000,
-        specs: ["คาลิเปอร์ 6-Pot อะลูมิเนียมหล่อชิ้นเดียว", "จานเบรก Type III Slotted คาร์บอนสูง", "ระยะเบรกสั้นลง 18% ทนความร้อน 800°C"],
-        image: "/images/products/brake-brembo-gt6.jpg",
-      },
-      {
-        id: "wheels",
-        titleTh: "ล้อฟอร์จน้ำหนักเบา",
-        titleEn: "Enkei RPF1 Lightweight Racing",
-        xPercent: 25,
-        yPercent: 75,
-        productName: "Enkei RPF1 Classic Lightweight 18x9.5 ET30 5H114.3",
-        brand: "Enkei",
-        partNo: "ENK-3798956530SP",
-        price: 68000,
-        specs: ["เทคโนโลยี MAT Forged เบาเพียง 8.4 กก./วง", "ก้านคู่ Twin-Spoke ระบายความร้อนเบรกยอดเยี่ยม", "สเปกตรงรุ่นซุ้ม M2 ไม่ติดคาลิเปอร์"],
-        image: "/images/products/wheel-enkei-rpf1.jpg",
-      },
-      {
         id: "exhaust",
-        titleTh: "ชุดท่อไอเสียสปอร์ต",
+        titleTh: "ชุดท่อไอเสียปลายคาร์บอน 4 ท่อ",
         titleEn: "Eisenmann Valvetronic Sport Exhaust",
         xPercent: 88,
         yPercent: 70,
@@ -98,7 +110,177 @@ const CHASSIS_BUILDS: ChassisConfig[] = [
         brand: "Eisenmann",
         partNo: "EIS-B5432.0004",
         price: 138000,
-        specs: ["ท่อสูตรเยอรมันสแตนเลส T304 พรีเมียม", "ระบบวาล์วเปิด-ปิดเสียงอัตโนมัติตามรอบเครื่อง", "ปลายท่อคาร์บอนไฟเบอร์แท้ขนาด 102mm"],
+        specs: [
+          "ปลายท่อคาร์บอนไฟเบอร์ 4 ท่อตรงรุ่นดิฟฟิวเซอร์ M2 คันในรูป",
+          "ระบบวาล์วเปิด-ปิดเสียงอัตโนมัติตามรอบเครื่องยนต์",
+          "ท่อสูตรเยอรมันสแตนเลส T304 ลดแรงดันย้อนกลับ 35%",
+        ],
+        image: "/sites/ind/cat-exhaust.jpg",
+      },
+    ],
+  },
+  {
+    id: "gtr-r34",
+    name: "Nissan Skyline GT-R (BNR34)",
+    subtitle: "RB26DETT Twin-Turbo Legend — Japanese Time Attack Spec",
+    categoryTag: "JDM Legend (ตรงรูปรถ GT-R ล้อ TE37 ทองไหม้ 100%)",
+    image: "/images/products/wheel-rays-te37-car.jpg",
+    fitmentSummary: {
+      frontWheel: "18x9.5 ET22 5H114.3 (RAYS TE37 SAGA Bronze)",
+      rearWheel: "18x9.5 ET22 5H114.3 (RAYS TE37 SAGA Bronze)",
+      tires: "Yokohama ADVAN Neova AD09 265/35 R18 Square",
+      drop: "-35mm Race Ride Height Alignment",
+    },
+    hotspots: [
+      {
+        id: "wheels",
+        titleTh: "ล้อฟอร์จสีทองไหม้ 6 ก้านในตำนาน (ตรงรูปรถ 100%)",
+        titleEn: "RAYS Volk Racing TE37 SAGA S-plus Bronze",
+        xPercent: 32,
+        yPercent: 74,
+        productName: "RAYS Volk Racing TE37 SAGA S-plus 18x9.5 ET22 Almite Bronze",
+        brand: "RAYS Volk Racing",
+        partNo: "RAYS-TE37-BR18",
+        price: 118000,
+        specs: [
+          "✓ ล้อก้านตรงสีทองไหม้ (Almite Bronze) ตรงกับรูปรถ GT-R BNR34 100%",
+          "โมลด์ฟอร์จความดัน 10,000 ตัน ทนทานและน้ำหนักเบาที่สุดในวงการ",
+          "สลักโลโก้ Machining ลิขสิทธิ์แท้จากโรงงาน RAYS ญี่ปุ่น",
+        ],
+        image: "/images/products/wheel-rays-te37.jpg",
+      },
+      {
+        id: "brakes",
+        titleTh: "ชุดเบรกสีทอง Brembo GT-R Spec (ตรงรูปรถ 100%)",
+        titleEn: "Brembo Racing Disc Brake Kit",
+        xPercent: 36,
+        yPercent: 71,
+        productName: "Brembo GT Junior 4-Pot Caliper Kit จาน 355mm",
+        brand: "Brembo",
+        partNo: "BRE-1B1.8002A",
+        price: 125000,
+        specs: [
+          "✓ คาลิเปอร์สีทองและจานเบรกขนาดใหญ่ซ่อนหลังล้อ TE37 ตรงตามรูป",
+          "จานเบรก 2 ชิ้นไฮคาร์บอนเจาะรูเซาะร่อง",
+          "สายเบรกสแตนเลสถักทนแรงดันสูง เบรกหยุดได้แม่นยำทุกย่านความเร็ว",
+        ],
+        image: "/images/products/brake-brembo-car.jpg",
+      },
+      {
+        id: "suspension",
+        titleTh: "ระบบโช้คอัพสตรัท Bilstein B16",
+        titleEn: "Bilstein B16 PSS10 Monotube Coilovers",
+        xPercent: 30,
+        yPercent: 60,
+        productName: "Bilstein B16 PSS10 Track Damper Kit for Skyline GT-R",
+        brand: "Bilstein",
+        partNo: "BIL-48-112344",
+        price: 128000,
+        specs: [
+          "กระบอกโช้คสีเหลือง-สปริงน้ำเงิน Monotube ทนความร้อนสูง",
+          "ปรับความแข็งอ่อนได้ 10 ระดับด้วยสวิตช์หมุนคลิกเดียว",
+          "เซ็ตติ้งมุม Camber/Toe สำหรับการเข้าโค้งความเร็วสูง",
+        ],
+        image: "/images/products/susp-bilstein-b16.jpg",
+      },
+      {
+        id: "exhaust",
+        titleTh: "ท่อไอเสียไทเทเนียม Nismo Spec",
+        titleEn: "Nismo Full Titanium Racing Exhaust",
+        xPercent: 88,
+        yPercent: 72,
+        productName: "Nismo NE-1 Ver.2 Titanium Exhaust System",
+        brand: "Nismo Performance",
+        partNo: "NIS-20100-RNR45",
+        price: 175000,
+        specs: [
+          "ผลิตจากเนื้อไทเทเนียมเกรดอากาศยาน เบากว่าของเดิม 12.5 กก.",
+          "เสียงหวานกังวานตามสูตรเครื่องยนต์ 6 สูบเรียง RB26DETT",
+          "ปลายท่อไทเทเนียมสีรุ้งเผาไฟขนาด 115mm",
+        ],
+        image: "/sites/ind/cat-exhaust.jpg",
+      },
+    ],
+  },
+  {
+    id: "honda-s2000",
+    name: "Honda S2000 AP2 Track Spec",
+    subtitle: "High-Revving VTEC 9,000 RPM — Pure Lightweight Agility",
+    categoryTag: "JDM Lightweight (ตรงรูปรถ S2000 ล้อ Enkei RPF1 เงิน 100%)",
+    image: "/images/products/wheel-enkei-rpf1-car.jpg",
+    fitmentSummary: {
+      frontWheel: "17x8.0 ET35 5H114.3 (Enkei RPF1 Silver)",
+      rearWheel: "17x9.0 ET45 5H114.3 (Enkei RPF1 Silver)",
+      tires: "Michelin Pilot Sport 5 (215/45 R17 & 245/40 R17)",
+      drop: "-40mm Track Stance (Tein Flex Z Adjusted)",
+    },
+    hotspots: [
+      {
+        id: "wheels",
+        titleTh: "ล้อฟอร์จสีเงินก้านคู่ในตำนาน (ตรงรูปรถ 100%)",
+        titleEn: "Enkei RPF1 Classic Lightweight Silver",
+        xPercent: 38,
+        yPercent: 73,
+        productName: "Enkei RPF1 Classic Lightweight 17x8.0 / 17x9.0 F1 Silver",
+        brand: "Enkei",
+        partNo: "ENK-3797806535SP",
+        price: 68000,
+        specs: [
+          "✓ ล้อ Enkei RPF1 สีเงิน F1 Silver ก้านคู่ ตรงกับรูปรถ S2000 ในรูป 100%",
+          "เทคโนโลยี MAT Process น้ำหนักเบาพิเศษเพียง 7.1 กก./วง",
+          "รูปทรงก้านเว้า Twin-Spoke ระบายความร้อนจานเบรกดีเยี่ยมขณะลงแทร็ก",
+        ],
+        image: "/images/products/wheel-enkei-rpf1.jpg",
+      },
+      {
+        id: "brakes",
+        titleTh: "ชุดจานเบรกและคาลิเปอร์แทร็ก (ตรงรูปรถ 100%)",
+        titleEn: "Track Disc & Caliper Kit",
+        xPercent: 42,
+        yPercent: 70,
+        productName: "Brembo GT Junior 4-Pot Caliper Kit จาน 330mm",
+        brand: "Brembo",
+        partNo: "BRE-1A1.6002A",
+        price: 98000,
+        specs: [
+          "✓ จานเบรกและคาลิเปอร์แน่นเต็มล้อ RPF1 17 นิ้วตรงตามรูป",
+          "ทนความร้อนสูง ไร้อาการเบรกเฟดแม้วิ่งต่อเนื่องในสนาม",
+          "ผ้าเบรกทนความร้อนสูงถึง 650°C",
+        ],
+        image: "/images/products/brake-brembo-gt6.jpg",
+      },
+      {
+        id: "suspension",
+        titleTh: "ระบบโช้คอัพสปริงเขียว Tein Flex Z",
+        titleEn: "Tein Flex Z Street & Track Coilovers",
+        xPercent: 35,
+        yPercent: 58,
+        productName: "Tein Flex Z Full-Tap 16-Step Coilovers Honda S2000",
+        brand: "Tein",
+        partNo: "TEIN-VSH64-C1SS3",
+        price: 52000,
+        specs: [
+          "กระบอกโช้คปรับเกลียวความยาวทั้งตัว (Full-Tap) สปริงสีเขียวซิกเนเจอร์",
+          "ปรับความหนืด 16 ระดับ ควบคุมการทรงตัวของรถน้ำหนักเบาได้แม่นยำ",
+          "เคลือบสี ZT ป้องกันสนิมและความชื้นได้ยอดเยี่ยม",
+        ],
+        image: "/images/products/susp-tein-rx1.jpg",
+      },
+      {
+        id: "exhaust",
+        titleTh: "ท่อไอเสียไทเทเนียม Single Exit",
+        titleEn: "Tomei Expreme Ti Titanium Exhaust",
+        xPercent: 86,
+        yPercent: 68,
+        productName: "Tomei Expreme Ti Titanium Exhaust System S2000",
+        brand: "Tomei Powered",
+        partNo: "TOM-440013",
+        price: 56000,
+        specs: [
+          "ท่อออกเดี่ยวไทเทเนียมทั้งเส้น เบากว่าท่อเดิม 14.8 กก.",
+          "รีดแรงม้าในช่วงรอบสูง 6,000 - 9,000 RPM ได้เต็มประสิทธิภาพ",
+          "ปลายท่อไทเทเนียมเผาปลายสีรุ้งขนาด 105mm",
+        ],
         image: "/sites/ind/cat-exhaust.jpg",
       },
     ],
@@ -107,132 +289,81 @@ const CHASSIS_BUILDS: ChassisConfig[] = [
     id: "defender-110",
     name: "2024 Land Rover Defender 110 V8",
     subtitle: "Luxury Overland & Bespoke Stance — 5.0L Supercharged V8",
-    categoryTag: "Luxury Overland (ความหรูหราพร้อมลุย)",
+    categoryTag: "Luxury Overland (ตรงรูปรถ Defender ล้อดำ Forged 22 นิ้ว 100%)",
     image: "/sites/urban/banner-defender-grey.webp",
     fitmentSummary: {
-      frontWheel: "22x10.0 ET25 5H120 (Monoblock Forged)",
-      rearWheel: "22x10.0 ET25 5H120 (Monoblock Forged)",
+      frontWheel: "22x10.0 ET25 5H120 (Urban UV-1 Satin Black)",
+      rearWheel: "22x10.0 ET25 5H120 (Urban UV-1 Satin Black)",
       tires: "Michelin Pilot Sport SUV 285/45 R22 All-Season",
       drop: "-25mm Dynamic Air Stance Calibration",
     },
     hotspots: [
       {
-        id: "suspension",
-        titleTh: "ระบบถุงลมปรับระดับอัตโนมัติ",
-        titleEn: "Ackermann Air-Ride Lowering Calibration",
-        xPercent: 30,
-        yPercent: 58,
-        productName: "Ackermann Dynamic Electronic Air Suspension Link Module",
-        brand: "Ackermann Engineering",
-        partNo: "ACK-DEF-AIR01",
-        price: 58000,
-        specs: ["ปรับลดความสูงขณะจอด 40mm เพื่อ Stance ที่สง่างาม", "รองรับโหมด Off-road ยกสูงอัตโนมัติเมื่อตรวจจับภูมิประเทศ", "ควบคุมผ่านสวิตช์ในรถและระบบ ERP ไร้สาย"],
-        image: "/images/products/susp-bilstein-b16.jpg",
+        id: "wheels",
+        titleTh: "ล้อโมโนบล็อกฟอร์จสีดำด้าน 22 นิ้ว (ตรงรูปรถ 100%)",
+        titleEn: "Bespoke Urban UV-1 22\" Monoblock Forged",
+        xPercent: 27,
+        yPercent: 72,
+        productName: "Bespoke UV-1 Monoblock Forged 22x10 ET25 Satin Black",
+        brand: "Bespoke Forged",
+        partNo: "UV1-2210-DEF",
+        price: 195000,
+        specs: [
+          "✓ ล้อสั่งตัดสีดำด้าน Satin Black ขนาด 22 นิ้ว ตรงรุ่นรถ Defender คันสีเทาในรูป 100%",
+          "ขึ้นรูปจากแท่งอะลูมิเนียม 6061-T6 เกรดอากาศยาน",
+          "รับน้ำหนักบรรทุก 1,100 กก./วง แข็งแกร่งพร้อมลุยทุกอุปสรรค",
+        ],
+        image: "/sites/urban/discover-wheels.webp",
       },
       {
         id: "brakes",
-        titleTh: "ชุดเบรกสำหรับรถ SUV กำลังสูง",
-        titleEn: "Brembo Heavy Duty 6-Pot Kit",
+        titleTh: "ชุดเบรกคาลิเปอร์ Brembo Heavy Duty",
+        titleEn: "Brembo High-Load 6-Pot Kit",
         xPercent: 36,
         yPercent: 68,
         productName: "Brembo GT Junior 6-Pot High-Load Kit จาน 405mm",
         brand: "Brembo",
         partNo: "BRE-1M2.9022A",
         price: 185000,
-        specs: ["คาลิเปอร์ขนาดใหญ่รองรับน้ำหนักตัวรถ 2.5 ตัน", "จานเบรกขนาด 405mm พร้อมระบบระบายอากาศครีบโค้ง", "หยุดมั่นใจในทุกสภาวะถนนเปียกและแห้ง"],
+        specs: [
+          "คาลิเปอร์ขนาดใหญ่รองรับน้ำหนักตัวรถ 2.5 ตัน",
+          "จานเบรก 405mm ครีบระบายความร้อนโค้ง รับมือแรงเบรกจากเครื่องยนต์ V8",
+          "หยุดนิ่งมั่นใจ ปลอดภัยในทุกเส้นทางออฟโรดและทางหลวง",
+        ],
         image: "/images/products/brake-brembo-gt6.jpg",
       },
       {
-        id: "wheels",
-        titleTh: "ล้อฟอร์จสั่งตัดพิเศษ",
-        titleEn: "Bespoke Urban 22\" Monoblock Forged",
-        xPercent: 27,
-        yPercent: 72,
-        productName: "Bespoke UV-1 Monoblock Forged 22x10 ET25",
-        brand: "Bespoke Forged",
-        partNo: "UV1-2210-DEF",
-        price: 195000,
-        specs: ["ขึ้นรูปจากแท่งอะลูมิเนียม 6061-T6 เกรดอากาศยาน", "น้ำหนักเบากว่าล้อเดิมโรงงาน 32%", "รองรับน้ำหนักบรรทุก 1,100 กก. ต่อล้อ"],
-        image: "/sites/urban/discover-wheels.webp",
-      },
-      {
-        id: "exhaust",
-        titleTh: "ท่อไอเสียสปอร์ตพลังเสียง V8",
-        titleEn: "Supersprint Quad Active Exhaust",
-        xPercent: 86,
-        yPercent: 66,
-        productName: "Supersprint Inox Valvetronic System V8 Sound",
-        brand: "Supersprint",
-        partNo: "SUP-409812",
-        price: 145000,
-        specs: ["เสียงคำรามทุ้มลึกสไตล์ V8 บ่งบอกเอกลักษณ์ความแรง", "ท่อทางเดินไอเสียออกแบบลดแรงดันย้อนกลับ 40%", "ปลายท่อสแตนเลสปัดเงา 4 ช่องรับกับดิฟฟิวเซอร์"],
-        image: "/sites/ind/cat-exhaust.jpg",
-      },
-    ],
-  },
-  {
-    id: "porsche-911",
-    name: "2024 Porsche 911 GT3 (992)",
-    subtitle: "Naturally Aspirated 9,000 RPM — Pure Motorsport Engineering",
-    categoryTag: "Pure Motorsport (มอเตอร์สปอร์ตพันธุ์แท้)",
-    image: "/sites/ind/hero-bronco-bbs.jpg",
-    fitmentSummary: {
-      frontWheel: "20x9.0 ET35 Centerlock / 5H112",
-      rearWheel: "21x12.0 ET40 Centerlock / 5H112",
-      tires: "Michelin Pilot Sport Cup 2 (255/35 R20 & 315/30 R21)",
-      drop: "-15mm Race Camber Setup (-2.5° Front / -2.0° Rear)",
-    },
-    hotspots: [
-      {
         id: "suspension",
-        titleTh: "ระบบช่วงล่างแข่งขันปรับไฟฟ้า",
-        titleEn: "Bilstein B16 DampTronic Porsche Spec",
-        xPercent: 32,
-        yPercent: 55,
-        productName: "Bilstein B16 PSS10 DampTronic Coilover System",
-        brand: "Bilstein",
-        partNo: "BIL-49-216127",
-        price: 168000,
-        specs: ["เชื่อมต่อระบบ PASM เดิมของ Porsche แบบ 100% Plug & Play", "ปรับเซ็ตติ้งได้ทั้งโหมด Normal, Sport และ Track ในห้องโดยสาร", "สปริงหล่อพิเศษจากโรงงาน Bilstein เยอรมนี"],
+        titleTh: "ระบบถุงลมปรับระดับความสูงอัตโนมัติ",
+        titleEn: "Ackermann Dynamic Air Lowering System",
+        xPercent: 30,
+        yPercent: 58,
+        productName: "Ackermann Dynamic Electronic Air Suspension Link Module",
+        brand: "Ackermann Engineering",
+        partNo: "ACK-DEF-AIR01",
+        price: 58000,
+        specs: [
+          "จัดทรง Stance รถเตี้ยลง 30mm ขณะขับขี่เพื่อความคล่องตัวและแอโรไดนามิก",
+          "ยกสูงอัตโนมัติเมื่อเปลี่ยนเข้าสู่โหมด Off-road",
+          "เชื่อมต่อและรายงานสถานะผ่านระบบ Ackermann ERP",
+        ],
         image: "/images/products/susp-bilstein-b16.jpg",
       },
       {
-        id: "brakes",
-        titleTh: "ชุดจานคาร์บอนเซรามิก",
-        titleEn: "AP Racing Radi-CAL Track Brakes",
-        xPercent: 37,
-        yPercent: 67,
-        productName: "AP Racing World Radi-CAL II CP9540 4-Pot / 6-Pot",
-        brand: "AP Racing",
-        partNo: "APR-CP9540-2S0",
-        price: 198000,
-        specs: ["เทคโนโลยี Radi-CAL แขนโครงสร้างไม่สมมาตร ลดน้ำหนักสูงสุด", "ทนทานต่อการลงแทร็กระดับ Endurance ไร้การเฟด", "ผ้าเบรกเกรดแข่งขันพร้อมเซนเซอร์จับความหนา"],
-        image: "/images/products/brake-brembo-detail.jpg",
-      },
-      {
-        id: "wheels",
-        titleTh: "ล้อโมโนบล็อกฟอร์จเจาะก้าน",
-        titleEn: "BBS FI-R Monobloc Forged",
-        xPercent: 27,
-        yPercent: 71,
-        productName: "BBS FI-R Monobloc Forged 20x9.0 ET35 5H112",
-        brand: "BBS",
-        partNo: "BBS-FIR137",
-        price: 245000,
-        specs: ["สุดยอดนวัตกรรมเจาะรูกลวงกลางก้านล้อ เบาที่สุดในประวัติศาสตร์", "ความแข็งแกร่งระดับรถแข่ง GT3 Cup", "สี Platinum Silver เคลือบพิเศษ"],
-        image: "/images/products/wheel-bbs-fir.jpg",
-      },
-      {
         id: "exhaust",
-        titleTh: "ท่อไอเสียไทเทเนียมแท้ทั้งเส้น",
-        titleEn: "Akrapovič Titanium Evolution Line",
+        titleTh: "ท่อไอเสียสปอร์ตพลังเสียง V8 4 ท่อ",
+        titleEn: "Urban Milltek Quad Active Exhaust",
         xPercent: 86,
-        yPercent: 64,
-        productName: "Akrapovič Full Titanium Sport Exhaust System",
-        brand: "Akrapovič",
-        partNo: "AKR-S-PO992-T",
-        price: 285000,
-        specs: ["ผลิตจากไทเทเนียมน้ำหนักเบาพิเศษ เบากว่าของเดิม 14.2 กก.", "เพิ่มแรงม้า +16.8 HP ที่ 7,200 RPM", "ปลายท่อไทเทเนียมคู่พ่นทรายสลักเลเซอร์ Akrapovič"],
+        yPercent: 66,
+        productName: "Urban Milltek Inox Valvetronic System V8 Sound",
+        brand: "Urban Automotive",
+        partNo: "URB-DEF-V8EX",
+        price: 145000,
+        specs: [
+          "ปลายท่อคู่ซ้าย-ขวาสี่ช่องดำด้านกลมกลืนกับท้ายรถตามรูป",
+          "เปิดวาล์วเสียงคำรามดุดันของเครื่องยนต์ 5.0L Supercharged V8",
+          "ท่อสแตนเลส T304 ทนทานต่อการลุยน้ำและโคลน",
+        ],
         image: "/sites/ind/cat-exhaust.jpg",
       },
     ],
@@ -241,7 +372,7 @@ const CHASSIS_BUILDS: ChassisConfig[] = [
 
 export default function InteractiveStanceStudio() {
   const router = useRouter();
-  const { addItem } = useBooking();
+  const { addItem, setSelectedVehicleId } = useBooking();
 
   const [selectedChassisIndex, setSelectedChassisIndex] = useState(0);
   const [activeHotspotId, setActiveHotspotId] = useState<string>("wheels");
@@ -258,7 +389,7 @@ export default function InteractiveStanceStudio() {
   );
 
   const handleCloneBuild = () => {
-    // Add all 4 parts of this signature build into the booking cart
+    setSelectedVehicleId(currentChassis.id);
     currentChassis.hotspots.forEach((h) => {
       addItem(
         {
@@ -287,7 +418,6 @@ export default function InteractiveStanceStudio() {
 
   return (
     <section className="relative overflow-hidden bg-background py-20 border-t border-border">
-      {/* Background Subtle Tech Grid */}
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -299,15 +429,15 @@ export default function InteractiveStanceStudio() {
               CINEMATIC BESPOKE STANCE & FITMENT STUDIO
             </div>
             <h2 className="mt-3 font-heading text-3xl font-extrabold tracking-tight sm:text-4xl text-foreground">
-              สตูดิโอจัดฟิตเมนต์ & ชิ้นส่วนแต่งรถแท้ตรงรุ่น
+              สตูดิโอจัดฟิตเมนต์ & ชิ้นส่วนแต่งรถแท้ตรงรุ่น 100%
             </h2>
             <p className="mt-2 text-sm text-muted max-w-2xl">
-              เลือกโมเดลรถเพื่อสำรวจเลเยอร์ชิ้นส่วนสำคัญ 4 ตำแหน่ง (โช้คอัพ, เบรก, ล้อฟอร์จ, ท่อไอเสีย) พร้อมสเปกและราคารวมติดตั้งจริงที่เชื่อมต่อตรงจากระบบคลัง Ackermann ERP
+              เลือกโมเดลรถเพื่อสำรวจเลเยอร์ชิ้นส่วนสำคัญ 4 ตำแหน่ง (โช้คอัพ, เบรก, ล้อฟอร์จ, ท่อไอเสีย) โดยทุกชิ้นส่วนตรงกับภาพรถยนต์จริง 100% เชื่อมต่อสต็อกและราคารวมติดตั้งตรงจากระบบคลัง Ackermann ERP
             </p>
           </div>
 
-          {/* Chassis Switcher Pills */}
-          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border border-border bg-surface">
+          {/* 4 Chassis Switcher Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border border-border bg-surface">
             {CHASSIS_BUILDS.map((c, idx) => (
               <button
                 key={c.id}
@@ -316,13 +446,13 @@ export default function InteractiveStanceStudio() {
                   setSelectedChassisIndex(idx);
                   setActiveHotspotId("wheels");
                 }}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+                className={`rounded-xl px-3.5 py-2 text-xs font-bold transition ${
                   selectedChassisIndex === idx
                     ? "bg-primary text-white shadow-md shadow-primary/25"
                     : "text-muted hover:text-foreground hover:bg-background/80"
                 }`}
               >
-                {c.name.split(" ")[1]} ({c.id.toUpperCase()})
+                {c.name.split(" ")[1] ?? c.name}
               </button>
             ))}
           </div>
@@ -330,7 +460,7 @@ export default function InteractiveStanceStudio() {
 
         {/* Studio Viewport */}
         <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-center">
-          {/* Left / Center: Interactive Car Viewport with Hotspots */}
+          {/* Left: Car Viewport with Hotspots */}
           <div className="lg:col-span-8">
             <div className="relative aspect-16/9 w-full overflow-hidden rounded-3xl border border-border bg-gradient-to-b from-surface via-surface/60 to-background shadow-2xl">
               {/* Vehicle Main Image */}
@@ -342,14 +472,15 @@ export default function InteractiveStanceStudio() {
                 className={`object-cover transition-all duration-700 ease-out ${
                   isExplodedView ? "scale-95 blur-[1px] opacity-80" : "scale-100 opacity-100"
                 }`}
+                unoptimized
               />
 
               {/* Dark Gradient Overlay for Contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
 
               {/* Top Badges */}
               <div className="absolute top-5 left-5 right-5 flex items-center justify-between">
-                <span className="rounded-full bg-black/80 px-3.5 py-1 text-xs font-semibold text-secondary backdrop-blur border border-white/10">
+                <span className="rounded-full bg-black/85 px-3.5 py-1 text-xs font-semibold text-white backdrop-blur border border-white/10">
                   {currentChassis.categoryTag}
                 </span>
 
@@ -409,7 +540,7 @@ export default function InteractiveStanceStudio() {
 
               {/* Exploded View 4-Layer Floating Graphic Callouts */}
               {isExplodedView && (
-                <div className="absolute inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-around px-4 z-10 transition duration-500">
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-around px-4 z-10 transition duration-500">
                   {currentChassis.hotspots.map((spot) => (
                     <button
                       key={spot.id}
@@ -470,12 +601,11 @@ export default function InteractiveStanceStudio() {
           {/* Right Column: Live Part Specification & Action HUD */}
           <div className="lg:col-span-4">
             <div className="rounded-3xl border border-border bg-surface p-6 shadow-xl">
-              {/* Active Hotspot Component Card */}
               <div className="flex items-center justify-between text-xs pb-3 border-b border-border">
                 <span className="font-bold text-primary uppercase tracking-wider">
                   {activeHotspot.brand}
                 </span>
-                <span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-muted">
+                <span className="rounded-full border border-border bg-background px-2.5 py-0.5 text-muted font-mono">
                   Part No: {activeHotspot.partNo}
                 </span>
               </div>
@@ -517,7 +647,7 @@ export default function InteractiveStanceStudio() {
                   {formatTHB(activeHotspot.price)}
                 </div>
                 <span className="text-[10px] text-emerald-400 font-semibold block mt-1">
-                  ✓ รวมค่าแรงติดตั้งและตั้งศูนย์ระบบดิจิทัลแล้ว
+                  ✓ ราคารวมติดตั้งและตั้งศูนย์เรียบร้อยแล้ว
                 </span>
               </div>
 
