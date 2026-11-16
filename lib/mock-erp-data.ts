@@ -39,47 +39,159 @@ export function getSmartProductGallery(
   const normBrand = (brand || "").toLowerCase();
   const normName = (productName || "").toLowerCase();
 
-  // 1. Tires: Clean 4-photo set for all tires
-  if (normCat.includes("tire") || normCat.includes("ยาง") || normBrand.includes("michelin") || normBrand.includes("bridgestone") || normBrand.includes("yokohama")) {
+  // 1. Tires: User explicitly requested: "สำหรับยางก็ใช้รูปเดียวกันหมดเลยก็ได้เพราะมันแค่ยาง"
+  if (normCat.includes("tire") || normCat.includes("ยาง") || normBrand.includes("michelin") || normBrand.includes("bridgestone") || normBrand.includes("yokohama") || normBrand.includes("continental") || normBrand.includes("dunlop") || normBrand.includes("hankook") || normBrand.includes("pirelli") || normBrand.includes("toyo")) {
     return [
-      "/images/products/tire-1a.webp",
-      "/sites/ind/latest-bronco-wheel.jpg",
-      "/sites/ind/hero-g87-m2.jpg",
-      "/sites/urban/one-scott-cullinan.webp",
+      "/images/products/tire-michelin-ps5.webp",
+      "/images/products/tire-installed-car.jpg",
+      "/images/products/tire-racing-wheel.jpg",
+      "/sites/urban/discover-wheels.webp",
     ];
   }
 
-  // 2. Wheels
-  if (normCat.includes("wheel") || normCat.includes("ล้อ") || normBrand.includes("bbs") || normBrand.includes("vossen")) {
+  // 2. Wheels: Enkei specific models
+  if (normName.includes("rpf1")) {
     return [
-      "/sites/ind/cat-wheels.jpg",
+      "/images/products/wheel-enkei-rpf1.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
       "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+  if (normName.includes("pf07")) {
+    return [
+      "/images/products/wheel-enkei-pf07.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+  if (normName.includes("pf05")) {
+    return [
+      "/images/products/wheel-enkei-pf05.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+  if (normName.includes("nt03rr")) {
+    return [
+      "/images/products/wheel-enkei-nt03rr.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+  if (normName.includes("gtc02")) {
+    return [
+      "/images/products/wheel-enkei-gtc02.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+  if (normBrand.includes("enkei") || normName.includes("enkei")) {
+    return [
+      "/images/products/wheel-enkei-rpf1.jpg",
+      "/images/products/wheel-enkei-rpf1-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+
+  // 3. Wheels: RAYS / Volk Racing
+  if (normBrand.includes("rays") || normBrand.includes("volk") || normName.includes("te37") || normName.includes("gram lights") || normName.includes("ce28")) {
+    return [
+      "/images/products/wheel-rays-te37.jpg",
+      "/images/products/wheel-rays-te37-car.jpg",
+      "/sites/urban/discover-wheels.webp",
+      "/sites/ind/cat-wheels.jpg",
+    ];
+  }
+
+  // 4. Wheels: BBS (LM, FI-R, Super RS, CH-R)
+  if (normName.includes("fi-r")) {
+    return [
+      "/images/products/wheel-bbs-fir.jpg",
       "/sites/ind/latest-bbs-g99-m5.jpg",
       "/sites/ind/hero-bronco-bbs.jpg",
+      "/sites/urban/discover-wheels.webp",
+    ];
+  }
+  if (normBrand.includes("bbs") || normName.includes("bbs")) {
+    return [
+      "/images/products/wheel-bbs-lm.jpg",
+      "/sites/ind/latest-bbs-g99-m5.jpg",
+      "/sites/ind/hero-bronco-bbs.jpg",
+      "/sites/urban/discover-wheels.webp",
     ];
   }
 
-  // 3. Brakes (Calipers, Pads, Rotors, Oil)
-  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก") || normBrand.includes("brembo") || normBrand.includes("endless") || normBrand.includes("ap racing")) {
+  // Other Wheels fallback
+  if (normCat.includes("wheel") || normCat.includes("ล้อ") || normBrand.includes("vossen") || normBrand.includes("lenso") || normBrand.includes("oz racing") || normBrand.includes("ssr") || normBrand.includes("hre")) {
     return [
+      "/images/products/wheel-enkei-rpf1.jpg",
+      "/images/products/wheel-rays-te37.jpg",
+      "/images/products/wheel-bbs-lm.jpg",
+      "/images/products/wheel-rays-te37-car.jpg",
+    ];
+  }
+
+  // 5. Brakes (Calipers, Rotors, Pads)
+  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก") || normBrand.includes("brembo") || normBrand.includes("endless") || normBrand.includes("ap racing") || normName.includes("brembo") || normName.includes("ap racing") || normName.includes("endless")) {
+    return [
+      "/images/products/brake-brembo-gt6.jpg",
+      "/images/products/brake-brembo-car.jpg",
+      "/images/products/brake-brembo-detail.jpg",
       "/sites/ind/cat-brakes.jpg",
-      "/sites/ind/brand-mmx.jpg",
-      "/sites/urban/one-grigio-rrs.webp",
-      "/sites/ind/hero-g87-m2.jpg",
     ];
   }
 
-  // 4. Suspension, Coilovers, Springs, Shocks
-  if (normCat.includes("shock") || normCat.includes("suspension") || normCat.includes("spring") || normCat.includes("ช่วงล่าง") || normBrand.includes("kw") || normBrand.includes("ohlins")) {
+  // 6. Suspension: Bilstein, KW, Tein, Profender, H.Drive
+  if (normBrand.includes("bilstein") || normName.includes("bilstein")) {
     return [
-      "/sites/ind/cat-suspension.jpg",
+      "/images/products/susp-bilstein-b16.jpg",
+      "/images/products/susp-coilover-installed.jpg",
       "/sites/ind/brand-fallline.jpg",
-      "/images/service-4.webp",
-      "/sites/ind/hero-g87-m2.jpg",
+      "/sites/ind/cat-suspension.jpg",
+    ];
+  }
+  if (normBrand.includes("kw") || normName.includes("kw ")) {
+    return [
+      "/images/products/susp-kw-v3.png",
+      "/images/products/susp-coilover-installed.jpg",
+      "/sites/ind/brand-fallline.jpg",
+      "/sites/ind/cat-suspension.jpg",
+    ];
+  }
+  if (normBrand.includes("tein") || normName.includes("tein")) {
+    return [
+      "/images/products/susp-tein-rx1.jpg",
+      "/images/products/susp-coilover-installed.jpg",
+      "/sites/ind/brand-fallline.jpg",
+      "/sites/ind/cat-suspension.jpg",
+    ];
+  }
+  if (normCat.includes("shock") || normCat.includes("suspension") || normCat.includes("spring") || normCat.includes("ช่วงล่าง") || normBrand.includes("profender") || normBrand.includes("h.drive")) {
+    return [
+      "/images/products/susp-bilstein-b16.jpg",
+      "/images/products/susp-kw-v3.png",
+      "/images/products/susp-coilover-installed.jpg",
+      "/sites/ind/cat-suspension.jpg",
     ];
   }
 
-  // 5. Exhaust
+  // 7. Engine Oil & Maintenance Fluids
+  if (normCat.includes("oil") || normCat.includes("น้ำมัน") || normBrand.includes("motul") || normBrand.includes("castrol") || normBrand.includes("liqui moly") || normName.includes("motul") || normName.includes("castrol")) {
+    return [
+      "/images/products/oil-motul-300v.png",
+      "/sites/ind/cat-performance.jpg",
+      "/images/service-1.webp",
+      "/images/service-3.webp",
+    ];
+  }
+
+  // 8. Exhaust
   if (normCat.includes("exhaust") || normCat.includes("ท่อ") || normBrand.includes("eisenmann") || normBrand.includes("akrapov") || normBrand.includes("supersprint")) {
     return [
       "/sites/ind/cat-exhaust.jpg",
@@ -89,17 +201,7 @@ export function getSmartProductGallery(
     ];
   }
 
-  // 6. Engine Oil & Maintenance Fluids
-  if (normCat.includes("oil") || normCat.includes("น้ำมัน") || normBrand.includes("motul") || normBrand.includes("castrol")) {
-    return [
-      "/sites/ind/cat-performance.jpg",
-      "/images/products/soap-2a.webp",
-      "/images/service-1.webp",
-      "/images/service-3.webp",
-    ];
-  }
-
-  // 7. Air Filter & Carbon Intake
+  // 9. Air Filter & Carbon Intake
   if (normCat.includes("filter") || normCat.includes("กรอง") || normBrand.includes("eventuri") || normBrand.includes("k&n")) {
     return [
       "/sites/ind/brand-eventuri.jpg",
@@ -109,7 +211,7 @@ export function getSmartProductGallery(
     ];
   }
 
-  // 8. Body Parts, Spoilers, Aero
+  // 10. Body Parts, Spoilers, Aero
   if (normCat.includes("body") || normCat.includes("spoiler") || normCat.includes("แต่ง") || normCat.includes("carbon") || normBrand.includes("alpha-n") || normBrand.includes("3d design")) {
     return [
       "/sites/ind/cat-exterior.jpg",
@@ -119,22 +221,12 @@ export function getSmartProductGallery(
     ];
   }
 
-  // 9. Batteries
-  if (normCat.includes("battery") || normCat.includes("แบต") || normBrand.includes("gs") || normBrand.includes("fb")) {
-    return [
-      "/sites/ind/cat-performance.jpg",
-      "/images/service-5.webp",
-      "/images/service-1.webp",
-      "/sites/urban/discover-showroom.webp",
-    ];
-  }
-
   // General Fallback
   return [
-    "/sites/urban/discover-parts.webp",
-    "/sites/ind/cat-performance.jpg",
-    "/images/service-1.webp",
-    "/sites/urban/banner-avontur.webp",
+    "/images/products/wheel-enkei-rpf1.jpg",
+    "/images/products/brake-brembo-gt6.jpg",
+    "/images/products/susp-bilstein-b16.jpg",
+    "/images/products/tire-michelin-ps5.webp",
   ];
 }
 
@@ -147,43 +239,77 @@ export function getSmartProductImage(
   const normBrand = (brand || "").toLowerCase();
   const normName = (productName || "").toLowerCase();
 
-  // 1. High-priority Brand Match
-  if (normBrand.includes("eventuri") || normName.includes("eventuri")) return "/sites/ind/brand-eventuri.jpg";
-  if (normBrand.includes("bbs") || normName.includes("bbs")) return "/sites/ind/latest-bbs-g99-m5.jpg";
-  if (normBrand.includes("eisenmann") || normName.includes("eisenmann")) return "/sites/ind/brand-eisenmann.jpg";
-  if (normBrand.includes("akrapov") || normName.includes("akrapov")) return "/sites/ind/cat-exhaust.jpg";
-  if (normBrand.includes("alpha-n") || normName.includes("alpha-n")) return "/sites/ind/brand-alphan.jpg";
-  if (normBrand.includes("3d design") || normName.includes("3ddesign")) return "/sites/ind/brand-3ddesign.jpg";
-  if (normBrand.includes("karbonius") || normName.includes("karbonius")) return "/sites/ind/brand-karbonius.jpg";
-  if (normBrand.includes("supersprint") || normName.includes("supersprint")) return "/sites/ind/brand-supersprint.jpg";
-  if (normBrand.includes("brembo") || normName.includes("brembo")) return "/sites/ind/cat-brakes.jpg";
-  if (normBrand.includes("endless") || normName.includes("endless")) return "/sites/ind/cat-brakes.jpg";
-  if (normBrand.includes("ap racing") || normName.includes("ap racing")) return "/sites/ind/cat-brakes.jpg";
-  if (normBrand.includes("kw") || normName.includes("kw ")) return "/sites/ind/cat-suspension.jpg";
-  if (normBrand.includes("ohlins") || normBrand.includes("öhlins")) return "/sites/ind/cat-suspension.jpg";
-  if (normBrand.includes("vossen") || normName.includes("vossen")) return "/sites/urban/discover-wheels.webp";
-  if (normBrand.includes("michelin") || normName.includes("michelin") || normBrand.includes("yokohama") || normBrand.includes("bridgestone")) {
-    return "/images/products/tire-1a.webp";
+  // 1. Tires: Single clean photo for all tires as requested by user
+  if (normCat.includes("tire") || normCat.includes("ยาง") || normBrand.includes("michelin") || normBrand.includes("bridgestone") || normBrand.includes("yokohama") || normBrand.includes("continental") || normBrand.includes("dunlop") || normBrand.includes("hankook") || normBrand.includes("pirelli") || normBrand.includes("toyo") || normName.includes("alenza") || normName.includes("turanza") || normName.includes("potenza") || normName.includes("pilot sport")) {
+    return "/images/products/tire-michelin-ps5.webp";
   }
 
-  // 2. Category Match
-  if (normCat.includes("tire") || normCat.includes("ยาง")) return "/images/products/tire-1a.webp";
-  if (normCat.includes("wheel") || normCat.includes("ล้อ")) return "/sites/ind/cat-wheels.jpg";
-  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก")) {
-    return "/sites/ind/cat-brakes.jpg";
+  // 2. Wheels: Enkei exact models
+  if (normName.includes("rpf1")) return "/images/products/wheel-enkei-rpf1.jpg";
+  if (normName.includes("pf07")) return "/images/products/wheel-enkei-pf07.jpg";
+  if (normName.includes("pf05")) return "/images/products/wheel-enkei-pf05.jpg";
+  if (normName.includes("nt03rr")) return "/images/products/wheel-enkei-nt03rr.jpg";
+  if (normName.includes("gtc02")) return "/images/products/wheel-enkei-gtc02.jpg";
+  if (normBrand.includes("enkei") || normName.includes("enkei")) return "/images/products/wheel-enkei-rpf1.jpg";
+
+  // 3. Wheels: RAYS / Volk Racing
+  if (normBrand.includes("rays") || normBrand.includes("volk") || normName.includes("te37") || normName.includes("gram lights") || normName.includes("ce28")) {
+    return "/images/products/wheel-rays-te37.jpg";
+  }
+
+  // 4. Wheels: BBS
+  if (normName.includes("fi-r")) return "/images/products/wheel-bbs-fir.jpg";
+  if (normBrand.includes("bbs") || normName.includes("bbs")) return "/images/products/wheel-bbs-lm.jpg";
+
+  // Other wheels
+  if (normCat.includes("wheel") || normCat.includes("ล้อ")) {
+    return "/images/products/wheel-enkei-rpf1.jpg";
+  }
+
+  // 5. Brakes (Calipers, Rotors, Pads)
+  if (normCat.includes("caliper") || normCat.includes("pad") || normCat.includes("rotor") || normCat.includes("brake") || normCat.includes("เบรก") || normBrand.includes("brembo") || normBrand.includes("endless") || normBrand.includes("ap racing") || normName.includes("brembo") || normName.includes("ap racing") || normName.includes("endless")) {
+    return "/images/products/brake-brembo-gt6.jpg";
+  }
+
+  // 6. Suspension
+  if (normBrand.includes("bilstein") || normName.includes("bilstein")) {
+    return "/images/products/susp-bilstein-b16.jpg";
+  }
+  if (normBrand.includes("kw") || normName.includes("kw ")) {
+    return "/images/products/susp-kw-v3.png";
+  }
+  if (normBrand.includes("tein") || normName.includes("tein")) {
+    return "/images/products/susp-tein-rx1.jpg";
   }
   if (normCat.includes("shock") || normCat.includes("suspension") || normCat.includes("spring") || normCat.includes("ช่วงล่าง")) {
-    return "/sites/ind/cat-suspension.jpg";
+    return "/images/products/susp-bilstein-b16.jpg";
   }
-  if (normCat.includes("exhaust") || normCat.includes("ท่อ")) return "/sites/ind/cat-exhaust.jpg";
-  if (normCat.includes("engine oil") || normCat.includes("oil") || normCat.includes("น้ำมัน")) return "/sites/ind/cat-performance.jpg";
-  if (normCat.includes("filter") || normCat.includes("กรอง")) return "/sites/urban/discover-parts.webp";
+
+  // 7. Engine Oil
+  if (normCat.includes("oil") || normCat.includes("น้ำมัน") || normBrand.includes("motul") || normBrand.includes("castrol") || normBrand.includes("liqui moly") || normName.includes("motul") || normName.includes("castrol") || normName.includes("molygen")) {
+    return "/images/products/oil-motul-300v.png";
+  }
+
+  // 8. Exhaust
+  if (normCat.includes("exhaust") || normCat.includes("ท่อ") || normBrand.includes("eisenmann") || normBrand.includes("akrapov") || normBrand.includes("supersprint")) {
+    return "/sites/ind/cat-exhaust.jpg";
+  }
+
+  // 9. Air Filter
+  if (normCat.includes("filter") || normCat.includes("กรอง") || normBrand.includes("eventuri") || normBrand.includes("k&n")) {
+    return "/sites/ind/brand-eventuri.jpg";
+  }
+
+  // 10. Body & Exterior
   if (normCat.includes("body") || normCat.includes("spoiler") || normCat.includes("แต่ง") || normCat.includes("carbon")) {
     return "/sites/ind/cat-exterior.jpg";
   }
+
+  // 11. Batteries
   if (normCat.includes("battery") || normCat.includes("แบต")) return "/sites/ind/cat-performance.jpg";
 
-  return "/sites/urban/discover-parts.webp";
+  // General Fallback
+  return "/images/products/wheel-enkei-rpf1.jpg";
 }
 
 export function getCategoryFallbackImage(categoryName?: string): string {

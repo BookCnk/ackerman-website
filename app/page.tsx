@@ -7,44 +7,34 @@ import {
   ShopByCategoryAndVehicleSection,
 } from "@/components/home/IndDiscoverySections";
 import FeaturedBuilds from "@/components/home/FeaturedBuilds";
-import About from "@/components/home/About";
 import Services from "@/components/home/Services";
-import Testimonials from "@/components/home/Testimonials";
-import WhyChoose from "@/components/home/WhyChoose";
-import Faq from "@/components/home/Faq";
-import InstagramGrid from "@/components/home/InstagramGrid";
 import Footer from "@/components/home/Footer";
 
 export default function Home() {
   return (
     <>
       <UrbanIntroCurtain />
-      {/* 1. Top Header Navigation with IND Mega-Menus */}
+      {/* 1. Top Header Navigation with Mega-Menus */}
       <Header />
 
       <main>
-        {/* 3. Urban Automotive Fullscreen Video Hero (urban-hero.mp4) + IND Fitment Dock */}
+        {/* 2. Fullscreen Video Hero + Quick Fitment Dock */}
         <Hero />
 
-        {/* 4. Urban Automotive Fullscreen Bespoke Banners, Video Showcase & One of One Carousel */}
+        {/* 3. Bespoke Banners, Video Showcase & One of One Builds */}
         <UrbanShowcaseSections />
 
-        {/* 5. IND Distribution 8 Categories, 12 Brands & Chassis Selector */}
+        {/* 4. Shop by Category & Chassis Selector */}
         <ShopByCategoryAndVehicleSection />
 
-        {/* 6. Featured Builds with BOM & Direct ERP Booking */}
+        {/* 5. Signature Builds with BOM & Direct Booking */}
         <FeaturedBuilds />
 
-        {/* 7. Direct ERP Popular Catalog & Pricing */}
+        {/* 6. Direct Popular Catalog with All-Inclusive Pricing */}
         <PopularCatalogSection />
 
-        {/* 8. Workshop Services & Engineering Standards */}
+        {/* 7. Workshop Engineering Standards & Diagnostics */}
         <Services />
-        <About />
-        <WhyChoose />
-        <Testimonials />
-        <Faq />
-        <InstagramGrid />
       </main>
 
       <Footer />

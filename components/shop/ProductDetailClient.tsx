@@ -93,9 +93,15 @@ export default function ProductDetailClient({ item }: { item: CatalogItem }) {
 
               <div className="absolute top-4 left-4 flex flex-col gap-2">
                 <StockBadge item={item} />
-                {activeImageIndex >= 2 && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/80 px-3 py-1 text-xs font-semibold text-white backdrop-blur">
-                    🚘 ภาพตัวอย่างการติดตั้งในรถจริง (Installed on Vehicle)
+                {activeImageIndex >= 1 && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/85 px-3 py-1 text-xs font-medium text-white shadow backdrop-blur border border-white/10">
+                    <svg className="h-3.5 w-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+                      <circle cx="7" cy="17" r="2" />
+                      <path d="M9 17h6" />
+                      <circle cx="17" cy="17" r="2" />
+                    </svg>
+                    ภาพตัวอย่างการติดตั้งในรถจริง (Installed on Vehicle)
                   </span>
                 )}
               </div>
@@ -126,8 +132,8 @@ export default function ProductDetailClient({ item }: { item: CatalogItem }) {
                     className="object-cover"
                     unoptimized
                   />
-                  {idx >= 2 && (
-                    <span className="absolute bottom-1 right-1 rounded bg-black/70 px-1 text-[9px] font-bold text-white">
+                  {idx >= 1 && (
+                    <span className="absolute bottom-1 right-1 rounded bg-black/80 px-1.5 py-0.5 text-[9px] font-semibold text-white">
                       ในรถ
                     </span>
                   )}
@@ -136,8 +142,13 @@ export default function ProductDetailClient({ item }: { item: CatalogItem }) {
             </div>
 
             {/* Photo Guide Tip */}
-            <p className="text-[11px] text-muted text-center">
-              💡 คลิกดูรูปเพื่อชมทั้งมุมตัวสินค้าและตัวอย่างชิ้นงานจริงขณะประกอบติดตั้งในรถ
+            <p className="flex items-center justify-center gap-1.5 text-[11px] text-muted text-center">
+              <svg className="h-3.5 w-3.5 text-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              คลิกดูรูปเพื่อชมทั้งมุมตัวสินค้าและตัวอย่างชิ้นงานจริงขณะประกอบติดตั้งในรถ
             </p>
           </div>
         </div>

@@ -342,6 +342,42 @@ export default function ShopContent() {
 
         {/* Right Product Grid */}
         <div className="lg:col-span-9">
+          {/* Top Brand Filter Pills */}
+          <div className="mb-5 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+            {[
+              { label: "ทุกแบรนด์", value: "" },
+              { label: "Enkei", value: "Enkei" },
+              { label: "RAYS / Volk", value: "RAYS" },
+              { label: "BBS", value: "BBS" },
+              { label: "Bilstein", value: "Bilstein" },
+              { label: "KW", value: "KW" },
+              { label: "Tein", value: "Tein" },
+              { label: "Brembo", value: "Brembo" },
+              { label: "Michelin", value: "Michelin" },
+              { label: "Bridgestone", value: "Bridgestone" },
+              { label: "Motul", value: "Motul" },
+            ].map((b) => {
+              const isActive = (b.value === "" && !searchQuery) || (b.value && searchQuery.toLowerCase() === b.value.toLowerCase());
+              return (
+                <button
+                  key={b.label}
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery(isActive ? "" : b.value);
+                    setPage(1);
+                  }}
+                  className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
+                    isActive
+                      ? "bg-primary text-white shadow-md shadow-primary/20"
+                      : "border border-border bg-surface text-secondary hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  {b.label}
+                </button>
+              );
+            })}
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
             <p className="text-sm text-muted">
               พบสินค้าทั้งหมด{" "}
