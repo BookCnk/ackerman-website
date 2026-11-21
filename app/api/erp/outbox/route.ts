@@ -1,23 +1,25 @@
 import { NextResponse } from "next/server";
-import { getPendingOutboxBookings, getAllOutboxBookings, getOutboxBooking, updateBookingSyncStatus } from "@/lib/outbox-store";
+import {
+  getPendingOutboxBookings,
+  getAllOutboxBookings,
+  getOutboxBooking,
+  updateBookingSyncStatus,
+} from "@/lib/outbox-store";
 import { dispatchBookingToErp } from "@/lib/erp-client";
-import { verifyErpSignature } from "@/lib/erp-crypto";
+import { verifyCronOrErpAuth } from "@/lib/erp-crypto";
 
 export async function GET(request: Request) {
+  const auth = verifyCronOrErpAuth(request, "");
+  if (!auth.valid) {
+    return NextResponse.json({ ok: false, error: auth.reason || "Unauthorized" }, { status: 403 });
+  }
+
   const { searchParams } = new URL(request.url);
   const statusFilter = searchParams.get("status");
 
-  // Optional HMAC validation
-  const timestamp = request.headers.get("X-Ackermann-Timestamp");
-  const signature = request.headers.get("X-Ackermann-Signature");
-  if (timestamp && signature) {
-    const auth = verifyErpSignature("", timestamp, signature);
-    if (!auth.valid) {
-      return NextResponse.json({ ok: false, error: auth.reason }, { status: 403 });
-    }
-  }
+  const bookings =
+    statusFilter === "all" ? await getAllOutboxBookings() : await getPendingOutboxBookings();
 
-  const bookings = statusFilter === "all" ? getAllOutboxBookings() : getPendingOutboxBookings();
   return NextResponse.json({
     ok: true,
     count: bookings.length,
@@ -27,12 +29,18 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json().catch(() => ({}));
+    const rawBody = await request.text();
+    const auth = verifyCronOrErpAuth(request, rawBody);
+    if (!auth.valid) {
+      return NextResponse.json({ ok: false, error: auth.reason || "Unauthorized" }, { status: 403 });
+    }
+
+    const body = rawBody ? (JSON.parse(rawBody) as { bookingNo?: string }) : {};
     const targetBookingNo = body.bookingNo;
 
     const toSync = targetBookingNo
-      ? [getOutboxBooking(targetBookingNo)].filter(Boolean)
-      : getPendingOutboxBookings();
+      ? [await getOutboxBooking(targetBookingNo)].filter(Boolean)
+      : await getPendingOutboxBookings();
 
     const results = [];
 
@@ -40,10 +48,20 @@ export async function POST(request: Request) {
       if (!b) continue;
       const res = await dispatchBookingToErp(b, b.holdToken);
       if (res.deliveredToLiveErp) {
-        updateBookingSyncStatus(b.bookingNo, "DEPOSIT_PAID_ERP_SYNCED");
+        await updateBookingSyncStatus(b.bookingNo, "DEPOSIT_PAID_ERP_SYNCED", undefined, {
+          endpointUrl: res.erpEndpoint,
+          event: "outbox.retry.succeeded",
+          payloadJson: JSON.stringify({ bookingNo: b.bookingNo, appointmentId: res.appointmentId }),
+          httpStatus: res.httpStatus,
+        });
         results.push({ bookingNo: b.bookingNo, synced: true });
       } else {
-        updateBookingSyncStatus(b.bookingNo, "PENDING_ERP_SYNC", res.error);
+        await updateBookingSyncStatus(b.bookingNo, "PENDING_ERP_SYNC", res.error, {
+          endpointUrl: res.erpEndpoint,
+          event: "outbox.retry.failed",
+          payloadJson: JSON.stringify({ bookingNo: b.bookingNo, error: res.error }),
+          httpStatus: res.httpStatus,
+        });
         results.push({ bookingNo: b.bookingNo, synced: false, error: res.error });
       }
     }

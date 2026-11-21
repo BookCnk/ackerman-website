@@ -47,16 +47,11 @@ export default function TrackBookingPortal({
   const [liveRecord, setLiveRecord] = useState<ErpBookingRecord>(fallbackRecord);
 
   useEffect(() => {
-    fetch("/api/erp/outbox?status=all")
-      .then((res) => res.json())
+    fetch(`/api/bookings/${encodeURIComponent(bookingNo)}`)
+      .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data.ok && Array.isArray(data.bookings)) {
-          const matched = data.bookings.find(
-            (b: ErpBookingRecord) => b.bookingNo.toLowerCase() === bookingNo.toLowerCase()
-          );
-          if (matched) {
-            setLiveRecord(matched);
-          }
+        if (data?.ok && data.booking) {
+          setLiveRecord(data.booking as ErpBookingRecord);
         }
       })
       .catch(() => {});

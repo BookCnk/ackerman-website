@@ -25,8 +25,8 @@ export async function POST(request: Request) {
 
     // If bookingNo was not provided directly, match by licensePlate
     if (!matchedBookingNo && data.licensePlate) {
-      const all = getAllOutboxBookings();
-      const normPlate = data.licensePlate.replace(/\s+/g, "");
+      const all = await getAllOutboxBookings();
+      const normPlate = String(data.licensePlate).replace(/\s+/g, "");
       const found = all.find((b) => b.licensePlate.replace(/\s+/g, "") === normPlate);
       if (found) {
         matchedBookingNo = found.bookingNo;
@@ -35,18 +35,18 @@ export async function POST(request: Request) {
 
     if (matchedBookingNo) {
       if (event === "parts.received") {
-        updateBookingWorkshopStatus(matchedBookingNo, {
+        await updateBookingWorkshopStatus(matchedBookingNo, {
           partsReadiness: "อะไหล่พร้อมแล้ว (Parts Ready)",
         });
       } else if (event === "job.status_changed") {
         const stage = Number(data.repairStage);
         if (stage >= 1 && stage <= 4) {
-          updateBookingWorkshopStatus(matchedBookingNo, {
+          await updateBookingWorkshopStatus(matchedBookingNo, {
             repairStage: stage as 1 | 2 | 3 | 4,
           });
         }
       } else if (event === "warranty.issued") {
-        updateBookingWorkshopStatus(matchedBookingNo, {
+        await updateBookingWorkshopStatus(matchedBookingNo, {
           warrantyCount: Number(data.warrantyCount) || 1,
         });
       }

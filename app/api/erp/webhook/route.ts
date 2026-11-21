@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
 import { dispatchBookingToErp } from "@/lib/erp-client";
+import { isProduction, verifyPaymentGatewaySignature } from "@/lib/erp-crypto";
 import { StockStatus } from "@/lib/mock-erp-data";
 import { saveOutboxBooking, updateBookingSyncStatus } from "@/lib/outbox-store";
 
 type WebhookRequestBody = {
   bookingNo?: string;
   holdToken?: string;
+  bookingMode?: "PAID_GATEWAY" | "PAY_AT_SHOP";
   customerName: string;
   customerPhone: string;
   licensePlate: string;
@@ -13,6 +15,7 @@ type WebhookRequestBody = {
   appointmentDate: string;
   appointmentSlot: string;
   paymentMethod: "PROMPTPAY_QR" | "CREDIT_CARD";
+  paymentGatewayRef?: string;
   items: {
     sku: string;
     name: string;
@@ -37,7 +40,42 @@ function formatToThaiDate(input: string): string {
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as WebhookRequestBody;
+    const rawBody = await request.text();
+    const body = JSON.parse(rawBody) as WebhookRequestBody;
+
+    // Production security guard:
+    // Prevent unverified browser clients from forging paid deposit bookings into ERP Cash Flow.
+    const allowDemoCheckout = process.env.ALLOW_DEMO_CHECKOUT === "true";
+    const paymentSig = request.headers.get("X-Payment-Webhook-Signature");
+    let effectiveDepositPaid = Number(body.depositPaid || 0);
+    let effectiveRemainingBalance = Number(body.remainingBalance || 0);
+    let gatewayRef = body.paymentGatewayRef || `chrg_live_ack_${Date.now().toString(36)}`;
+
+    if (isProduction() && !allowDemoCheckout) {
+      if (paymentSig) {
+        const sigCheck = verifyPaymentGatewaySignature(rawBody, paymentSig);
+        if (!sigCheck.valid) {
+          return NextResponse.json(
+            { ok: false, error: sigCheck.reason || "Invalid payment gateway signature" },
+            { status: 403 }
+          );
+        }
+      } else if (body.bookingMode === "PAY_AT_SHOP") {
+        // Safe unverified reservation mode: never credit unverified deposit money into ERP
+        effectiveDepositPaid = 0;
+        effectiveRemainingBalance = Number(body.grandTotal || 0);
+        gatewayRef = "PAY_AT_SHOP";
+      } else {
+        return NextResponse.json(
+          {
+            ok: false,
+            error:
+              "Direct unverified deposit webhook is disabled in production. Provide a valid X-Payment-Webhook-Signature or use bookingMode='PAY_AT_SHOP'.",
+          },
+          { status: 403 }
+        );
+      }
+    }
 
     const now = new Date();
     const dd = String(now.getDate()).padStart(2, "0");
@@ -48,7 +86,6 @@ export async function POST(request: Request) {
     const randomSuffix = String(Math.floor(100 + Math.random() * 900));
 
     const bookingNo = body.bookingNo || `BK-${yyyy}${mm}${dd}-${randomSuffix}`;
-    const gatewayRef = `chrg_live_ack_${Date.now().toString(36)}`;
 
     const hasPreOrder = body.items.some((i) => i.stockStatus === "PRE_ORDER");
     const hasPhysicalParts = body.items.some((i) => i.partPrice > 0);
@@ -82,14 +119,14 @@ export async function POST(request: Request) {
       partsTotal: body.partsTotal,
       laborTotal: body.laborTotal,
       grandTotal: body.grandTotal,
-      depositPaid: body.depositPaid,
-      remainingBalance: body.remainingBalance,
+      depositPaid: effectiveDepositPaid,
+      remainingBalance: effectiveRemainingBalance,
       paymentGatewayRef: gatewayRef,
       paymentMethod: body.paymentMethod,
     };
 
-    // 1. Save into Outbox Store first (Outbox Pattern)
-    saveOutboxBooking({
+    // 1. Save into Outbox Store first (PostgreSQL via Prisma in production, file fallback in local dev)
+    await saveOutboxBooking({
       ...erpBookingRecord,
       syncStatus: "PENDING_ERP_SYNC",
       retryCount: 0,
@@ -101,9 +138,24 @@ export async function POST(request: Request) {
 
     // 3. Update Outbox Status based on ERP delivery result
     if (dispatchResult.deliveredToLiveErp) {
-      updateBookingSyncStatus(bookingNo, "DEPOSIT_PAID_ERP_SYNCED");
+      await updateBookingSyncStatus(bookingNo, "DEPOSIT_PAID_ERP_SYNCED", undefined, {
+        endpointUrl: dispatchResult.erpEndpoint,
+        event: "payment_gateway.deposit.succeeded",
+        payloadJson: JSON.stringify({ bookingNo, appointmentId: dispatchResult.appointmentId }),
+        httpStatus: dispatchResult.httpStatus,
+      });
     } else {
-      updateBookingSyncStatus(bookingNo, "PENDING_ERP_SYNC", dispatchResult.error || "ERP Offline");
+      await updateBookingSyncStatus(
+        bookingNo,
+        "PENDING_ERP_SYNC",
+        dispatchResult.error || "ERP Offline",
+        {
+          endpointUrl: dispatchResult.erpEndpoint,
+          event: "payment_gateway.deposit.queued",
+          payloadJson: JSON.stringify({ bookingNo, error: dispatchResult.error }),
+          httpStatus: dispatchResult.httpStatus,
+        }
+      );
     }
 
     const erpSyncActions = [
@@ -121,9 +173,12 @@ export async function POST(request: Request) {
       },
       {
         module: "Finance & Cash Flow Hub",
-        action: `บันทึกยอดเงินมัดจำรับล่วงหน้า ฿${body.depositPaid.toLocaleString("th-TH", {
-          minimumFractionDigits: 2,
-        })} (Ref: ${gatewayRef}) เข้าบัญชีกระแสเงินสด รอหักลบตอนปิดบิล POS`,
+        action:
+          effectiveDepositPaid > 0
+            ? `บันทึกยอดเงินมัดจำรับล่วงหน้า ฿${effectiveDepositPaid.toLocaleString("th-TH", {
+                minimumFractionDigits: 2,
+              })} (Ref: ${gatewayRef}) เข้าบัญชีกระแสเงินสด รอหักลบตอนปิดบิล POS`
+            : "บันทึกคิวนัดหมายแบบรอชำระและตรวจสอบยอดที่หน้าเคาน์เตอร์อู่",
         badge: dispatchResult.deliveredToLiveErp ? "Synced to Live ERP" : "Queued in Storefront Outbox",
       },
     ];
@@ -141,9 +196,6 @@ export async function POST(request: Request) {
     });
   } catch (err: unknown) {
     const error = err instanceof Error ? err.message : "Invalid booking payload";
-    return NextResponse.json(
-      { ok: false, error },
-      { status: 400 }
-    );
+    return NextResponse.json({ ok: false, error }, { status: 400 });
   }
 }

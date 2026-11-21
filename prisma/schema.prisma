@@ -19,11 +19,13 @@ enum StockStatus {
 
 enum BookingStatus {
   PENDING_DEPOSIT
+  PENDING_ERP_SYNC
   DEPOSIT_PAID_ERP_SYNCED
   IN_WORKSHOP
   READY_FOR_PICKUP
   COMPLETED
   CANCELLED
+  FAILED
 }
 
 enum PaymentMethod {
@@ -128,6 +130,11 @@ model ServiceBooking {
   remainingBalance  Float
   paymentMethod     PaymentMethod     @default(PROMPTPAY_QR)
   paymentGatewayRef String?           @unique
+  holdToken         String?
+  retryCount        Int               @default(0)
+  lastSyncAttempt   DateTime?
+  lastSyncError     String?
+  warrantiesIssued  Int               @default(0)
   status            BookingStatus     @default(DEPOSIT_PAID_ERP_SYNCED)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
